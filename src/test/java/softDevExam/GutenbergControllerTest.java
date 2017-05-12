@@ -28,6 +28,8 @@ public class GutenbergControllerTest {
 
 	private String city = "Ajax";
 	private String book = "The Bible, King James Version, Complete";
+	private String author = "Frederick Douglass";
+	private String location = "123123";
 
 	@Before
 	public void setUp() throws Exception {
@@ -52,6 +54,22 @@ public class GutenbergControllerTest {
 
 		Response result = controller.getCitiesByBook(book).build();
 		assertThat(result.getEntity(), is(equalTo(city)));
+	}
+
+	@Test
+	public void testGetBooksAndCitysByAuthor() {
+		when(mysqlService.getBooksAndCitysByAuthor(author)).thenReturn(city);
+
+		Response result = controller.getBooksAndCitysByAuthor(author).build();
+		assertThat(result.getEntity(), is(equalTo(city)));
+	}
+
+	@Test
+	public void testGetBooksByLocation() {
+		when(mysqlService.getBooksByLocation(location)).thenReturn(book);
+
+		Response result = controller.getBooksByLocation(location).build();
+		assertThat(result.getEntity(), is(equalTo(book)));
 	}
 
 }

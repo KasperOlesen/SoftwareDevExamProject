@@ -36,12 +36,12 @@ public class MysqlResource {
 	@GET
 	@Path("/author/{author}")
 	public Response getBooksAndCitysByAuthor(@PathParam("author") String author) {
-		return controller.getBooksByCity(author).build();
+		return controller.getBooksAndCitysByAuthor(author).build();
 	}
 
 	@GET
 	@Path("/location/{location}")
 	public Response getBooksByLocation(@PathParam("location") String location) {
-		return controller.getBooksByCity(location).build();
+		return controller.getBooksByLocation(location).build();
 	}
 }

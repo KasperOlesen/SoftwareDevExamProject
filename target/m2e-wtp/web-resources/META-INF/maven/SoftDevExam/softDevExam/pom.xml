@@ -107,6 +107,10 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<resultsFileFormat>csv</resultsFileFormat>
+					<resultsDirectory>/target/jmeter/results</resultsDirectory>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

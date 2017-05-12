@@ -1,5 +1,6 @@
 softDevExam\persistence\GutenbergNeo4J.class
+softDevExam\boundary\MysqlResource.class
 softDevExam\persistence\GutenbergMysql.class
 softDevExam\controller\GutenbergController.class
-softDevExam\boundary\GutenbergResource.class
+softDevExam\boundary\Neo4JResource.class
 softDevExam\controller\GutenbergService.class

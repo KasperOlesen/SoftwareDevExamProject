@@ -39,4 +39,21 @@ public class GutenbergController {
 
 	}
 
+	public ResponseBuilder getBooksAndCitysByAuthor(String author) {
+		try {
+			return Response.status(Status.OK).entity(service.getBooksAndCitysByAuthor(author));
+		} catch (Exception e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage());
+		}
+
+	}
+
+	public ResponseBuilder getBooksByLocation(String location) {
+		try {
+			return Response.status(Status.OK).entity(service.getBooksByLocation(location));
+		} catch (Exception e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage());
+		}
+	}
+
 }
