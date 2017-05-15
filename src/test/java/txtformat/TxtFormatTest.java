@@ -14,6 +14,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.contains;
@@ -51,6 +52,7 @@ public class TxtFormatTest {
     // The methods must be annotated with annotation @Test. For example:
     //
      @Test
+     @Ignore
      public void getCitiesContentTest() throws UnsupportedEncodingException, IOException {
      FileIO fio = new FileIO();
      String[] cities = fio.getCities("D:\\school\\test\\cities.txt");
@@ -60,6 +62,7 @@ public class TxtFormatTest {
      }
      
      @Test
+     @Ignore
      public void writeFormmatedTxtTest() throws UnsupportedEncodingException, IOException {
      FileIO fio = new FileIO();
      String[] cities = fio.getCities("D:\\school\\test\\cities.txt");
