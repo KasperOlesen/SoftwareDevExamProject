@@ -16,7 +16,7 @@ $( document ).ready(function() {
 $('#inputDiv').contents().find(":checkbox").bind('change', function(){
   var selector = this.value;
   if($(this).is(":checked")){    
-    $('input[type="checkbox"]').not(this).prop("checked", false);
+    $('#inputForm > input[type=checkbox]').not(this).prop("checked", false);
     if(selector == "geo"){
       $('#location').prop("disabled", true); 
       $('#book').prop("disabled", true); 
@@ -46,8 +46,8 @@ $('#inputDiv').contents().find(":checkbox").bind('change', function(){
 
 //Click to submit
 $("#searchBtn").click(function(){
-  $("#resultDiv").show();
-  $('input[type=checkbox]').each(function(){
+  $('#inputForm > input[type=checkbox]').each(function(){
+    console.log(this.value)
     if($(this).is(":checked")){
       submit(this.value);
     }
@@ -56,18 +56,6 @@ $("#searchBtn").click(function(){
 
 //Add markers 
 function loadMarkers (data) {
-  console.log(data);
-   $.each(data, function(i, value) {
-    console.log("looping:")
-    console.log(value.lat + " : " + value.lng);
-        map.addMarker({
-          lat: value.lat,
-          lng: value.lng,
-          title: value.city
-        });
-    });
-}
-
 //Initialize map
 map = new GMaps({
   el: '#resultMap',
@@ -85,8 +73,20 @@ map = new GMaps({
   overviewMapControl: false
 });
 
+   $.each(data, function(i, value) {
+        map.addMarker({
+          lat: value.lat,
+          lng: value.lng,
+          title: value.city
+        });
+    });
+}
+
+
 //Submits search to backend
 function submit(category){
+
+  $("#resultList").empty();
 
   //TEST CODE
   var testData = [{
