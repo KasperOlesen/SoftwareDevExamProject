@@ -1,156 +1,163 @@
 
 $( document ).ready(function() {
-    var map;
+  var map;
 
 //DB switch
-$('#DBswitch').change(function () {
-    if ($(this).is(':checked')) {
-        alert('checked');
-    } else {
-        alert('not checked');
-    }
-});
+/*$('#DBswitch').change(function () {
+  if ($(this).is(':checked')) {
+    alert('checked');
+  } else {
+    alert('not checked');
+  }
+});*/
 
 
 //Clear All inputs except selected
 $('#inputDiv').contents().find(":checkbox").bind('change', function(){
-    var selector = this.value;      
+  var selector = this.value;
+  if($(this).is(":checked")){    
     $('input[type="checkbox"]').not(this).prop("checked", false);
     if(selector == "geo"){
-        $('#location').prop("disabled", true); 
-        $('#book').prop("disabled", true); 
-        $('#author').prop("disabled", true); 
-        $('#lat').prop("disabled", false); 
-        $('#lng').prop("disabled", false); 
+      $('#location').prop("disabled", true); 
+      $('#book').prop("disabled", true); 
+      $('#author').prop("disabled", true); 
+      $('#lat').prop("disabled", false); 
+      $('#lng').prop("disabled", false); 
+      $('#location').val(""); 
+      $('#book').val(""); ; 
+      $('#author').val(""); ; 
     }else{
-        $('input[type=text]').each(function(){
-            if(this.id == selector){
-                $(this).prop("disabled", false); 
-            }else{
-                $(this).prop("disabled", true); 
-                $(this).val(""); 
-            }
-        })  
-    }     
+      $('input[type=text]').each(function(){
+        if(this.id == selector){
+          $(this).prop("disabled", false); 
+        }else{
+          $(this).prop("disabled", true); 
+          $(this).val(""); 
+        }
+      });  
+    }
+  } else {
+    $('input[type=text]').each(function(){
+      $(this).prop("disabled", true); 
+      $(this).val(""); 
+    });
+  }     
 });
 
-
+//Click to submit
 $("#searchBtn").click(function(){
-    $("#resultDiv").show();
-    $('input[type=checkbox]').each(function(){
-        if($(this).is(":checked")){
-            submit(this.value);
-        }
-    });
+  $("#resultDiv").show();
+  $('input[type=checkbox]').each(function(){
+    if($(this).is(":checked")){
+      submit(this.value);
+    }
+  });
 });
 
 //Add markers 
-function loadResults (data) {
-  var items, markers_data = [];
-  if (data.venues.length > 0) {
-    items = data.venues;
-
-    for (var i = 0; i < items.length; i++) {
-      var item = items[i];
-
-      if (item.location.lat != undefined && item.location.lng != undefined) {
-        markers_data.push({
-          lat : item.location.lat,
-          lng : item.location.lng,
-          title : item.name,
-      });
-    }
-}
-}
-
-map.addMarkers(markers_data);
+function loadMarkers (data) {
+  console.log(data);
+   $.each(data, function(i, value) {
+    console.log("looping:")
+    console.log(value.lat + " : " + value.lng);
+        map.addMarker({
+          lat: value.lat,
+          lng: value.lng,
+          title: value.city
+        });
+    });
 }
 
 //Initialize map
 map = new GMaps({
-    el: '#resultMap',
-    lat: 55.676098,
-    lng: 12.568337,
-    zoomControl : true,
-    zoomControlOpt: {
-        style : 'SMALL',
-        position: 'TOP_LEFT'
-    },
-    panControl : false,
-    streetViewControl : false,
-    mapTypeControl: false,
-    overviewMapControl: false
+  el: '#resultMap',
+  lat: 55.676098,
+  lng: 12.568337,
+  zoom: 2,
+  zoomControl : true,
+  zoomControlOpt: {
+    style : 'SMALL',
+    position: 'TOP_LEFT'
+  },
+  panControl : false,
+  streetViewControl : false,
+  mapTypeControl: false,
+  overviewMapControl: false
 });
 
-/*// Define user location
-GMaps.geolocate({
-  success: function(position) {
-    map.setCenter(position.coords.latitude, position.coords.longitude);
+//Submits search to backend
+function submit(category){
 
+  //TEST CODE
+  var testData = [{
+    "city": "copenhagen",
+    "lat": "55.676098",
+    "lng": "12.568337"
+  },{
+    "city": "stockholm",
+    "lat": "59.3289",
+    "lng": "18.0649"
+  },{
+    "city": "paris",
+    "lat": "48.8566",
+    "lng": "2.3522"
+  }];
+  loadMarkers(testData);
+  $.each(testData, function(i, value) {
+          $("#resultList").append($("<li>").text(JSON.stringify(value)));
+        });
 
-        // Creating marker of user location
-        map.addMarker({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-          title: 'Lima',
-          click: function(e) {
-            alert('You clicked in this marker');
-        },
-        infoWindow: {
-          content: '<p>You are here!</p>'
-      }
-  });
-    },
-    error: function(error) {
-        alert('Geolocation failed: '+error.message);
-    },
-    not_supported: function() {
-        alert("Your browser does not support geolocation");
-    }
-});*/
+  var db = "";
+  var path = "limitless-oasis-66630.herokuapp.com/";
+  var inputData = {};
 
-//AJAX CALL
-function submit(url){
+  //Setting path to match REST-service
+  if($('#DBswitch').is(":checked")){
+    db = "neo4j";
+  }else{
+    db = "mysql";
+  }   
+  path += db + "/" + category;
 
-   //TODO:
-   //FORMAT INPUTDATA TO JSON FORMAT
-   var inputData = $('#inputDiv :input').serialize(); 
+  //Building data-object
+  if(category == "geo"){
+    inputData["lat"] = $("#lat").val();
+    inputData["lng"] = $("#lng").val();
+  } else {
+    inputData[category] = $("#" + category).val(); 
+  }
 
-   console.log(inputData);
-
-   $.ajax({
-    url: "api/something/" + url,
-    type: "POST",
+  //AJAX call
+  $.ajax({
+    url: path,
+    type: "GET",
     cache: false,
-    data: inputData,
+    data: JSON.stringify(inputData),
     dataType: "json",
-})
-   .done(function (data) {
-    if (url == "book"){
-        //TODO:
-        //APPLY RESULT TO MAP
-    } else if (url == "author"){
-        data.each(function (index) {
-            $("#resultList").add('<li>' + $(this) + '</li>');
+  })
+    .done(function (data) {
+
+      ///DEBUGGING///
+      console.log("SUCCESS")
+      console.log("Returned data:");
+      console.log(data);
+      ///////////////
+      if (category == "book"){
+        loadMarkers(data);
+      } else if (category == "author"){
+        $.each(data.books, function(i, value) {
+          $("#resultList").append($("<li>").text(JSON.stringify(value)));
         });
-        //TODO:
-        //APPLY RESULT TO MAP
-    } else {
-        data.each(function (index) {
-            $("#resultList").add('<li>' + $(this) + '</li>');
+        loadMarkers(data);
+      } else {
+        $.each(data, function(i, value) {
+          $("#resultList").append($("<li>").text(JSON.stringify(value)));
         });
-    }
-})
-   .fail(function (error) {
-
-
-   });
-}
-
+      }
+    })
+    .fail(function (error) {
+      //TODO:
+      //DISPLAY ERROR MSG TO USER
+    });
+  }
 });
-
-
-$(document).ready(function(){
-
-
-}); 
