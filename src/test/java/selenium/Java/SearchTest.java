@@ -44,9 +44,9 @@ public class SearchTest {
         // Reset DB function
         /*
 		 * com.jayway.restassured.RestAssured.given().get(
-		 * "http://localhost:3000/reset");
-		 * 
-		 * driver = new ChromeDriver(); driver.get("http://localhost:3000");
+		 * "http://localhost:9494");
+		 *  https://limitless-oasis-66630.herokuapp.com/
+		 * driver = new ChromeDriver(); driver.get("http://localhost:9494");
          */
     }
 
@@ -107,22 +107,26 @@ public class SearchTest {
     }
 
     @Test
-    @Ignore
     // Switching DB, test is equal to test4()
     public void test5() throws Exception {
-        WebElement db = driver.findElement(By.className("dbDiv"));
-        db.click();
-        WebElement element = driver.findElement(By.id("boxLocation"));
-        element.click();
-        WebElement fieldName = driver.findElement(By.id("location"));
-        fieldName.sendKeys("paris");
-        WebElement submit = driver.findElement(By.id("searchBtn"));
-        submit.click();
-
+        tearDown();
+        setup();
         (new WebDriverWait(driver, WAIT_MAX)).until((ExpectedCondition<Boolean>) (WebDriver d) -> {
-            WebElement result = d.findElement(By.id("resultList"));
-            List<WebElement> rows = result.findElements(By.tagName("li"));
-            assertThat(rows, is(not(rows.isEmpty())));
+            WebElement db = driver.findElement(By.id("dbDiv"));
+            db.click();
+            WebElement element = d.findElement(By.id("boxLocation"));
+            element.click();
+            WebElement fieldName = d.findElement(By.id("location"));
+            fieldName.sendKeys("paris");
+            WebElement submit = d.findElement(By.id("searchBtn"));
+            submit.click();
+
+            (new WebDriverWait(driver, WAIT_MAX)).until((ExpectedCondition<Boolean>) (WebDriver dd) -> {
+                WebElement result = dd.findElement(By.id("resultList"));
+                List<WebElement> rows = result.findElements(By.tagName("li"));
+                assertThat(rows, is(not(rows.isEmpty())));
+                return true;
+            });
             return true;
         });
     }
