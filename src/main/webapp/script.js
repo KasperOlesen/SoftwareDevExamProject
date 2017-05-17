@@ -108,7 +108,7 @@ function submit(category){
         });
 
   var db = "";
-  var path = "limitless-oasis-66630.herokuapp.com/";
+  var path = "/api/";
   var inputData = {};
 
   //Setting path to match REST-service
