@@ -126,6 +126,151 @@ public class FileIO {
         }
     }
 
+    public void createFormattedTxtAuthor(BufferedReader br, String path) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path, true))) {
+
+            String strLine;
+            int count = 0;
+            ArrayList<String> authorList = new ArrayList();
+
+            while ((strLine = br.readLine()) != null) {
+                if (strLine.contains("#")) {
+                    String[] aLine = strLine.split("#");
+                    if (aLine.length > 1 && !authorList.contains(aLine[1])) {
+                        writer.append(count + "#" + aLine[1]);
+                        count++;
+                        authorList.add(aLine[1]);
+                        writer.newLine();
+                    }
+
+                }
+
+            }
+            try {
+                br.close();
+
+            } catch (IOException ex) {
+                Logger.getLogger(Format.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public void createFormattedTxtBook(BufferedReader br, BufferedReader au, String path) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path, true))) {
+
+            String strLine;
+            String auLine;
+            ArrayList<String> bookList = new ArrayList();
+            ArrayList<String> authorList = new ArrayList();
+            while ((auLine = au.readLine()) != null) {
+                if (auLine.contains("#")) {
+                    String[] aLine = auLine.split("#");
+                    if (aLine.length > 1) {
+                        authorList.add(aLine[0] + "#" + aLine[1]);
+                    }
+
+                }
+            }
+
+            while ((strLine = br.readLine()) != null) {
+                if (strLine.contains("#")) {
+                    String[] aLine = strLine.split("#");
+                    if (aLine.length > 1) {
+                        bookList.add(aLine[0] + "#" + aLine[1]);
+                    }
+
+                }
+
+            }
+
+            for (int i = 0; i < bookList.size(); i++) {
+                for (int j = 0; j < authorList.size(); j++) {
+                    if (bookList.get(i).split("#")[1].equals(authorList.get(j).split("#")[1])) {
+                        writer.append(i + "#" + authorList.get(j).split("#")[0] + "#" + bookList.get(i).split("#")[0]);
+                        writer.newLine();
+                    }
+                }
+            }
+            try {
+                br.close();
+
+            } catch (IOException ex) {
+                Logger.getLogger(Format.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public void createFormattedTxtBookCity(BufferedReader br, BufferedReader ci, BufferedReader brId, String path) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path, true))) {
+
+            String strLine;
+            String strIdLine;
+            String ciLine;
+            ArrayList<String> bookList = new ArrayList();
+            ArrayList<String> bookIdList = new ArrayList();
+            ArrayList<String> cityList = new ArrayList();
+            ArrayList<String> book2List = new ArrayList();
+
+            while ((ciLine = ci.readLine()) != null) {
+
+                String[] cLine = ciLine.split(",");
+                if (cLine.length > 1) {
+                    cityList.add(cLine[0] + "#" + cLine[1]);
+                }
+
+            }
+            while ((strIdLine = brId.readLine()) != null) {
+
+                String[] brIdLine = strIdLine.split("#");
+                if (brIdLine.length > 1) {
+                    bookIdList.add(brIdLine[0] + "#" + brIdLine[2]);
+                }
+
+            }
+
+            while ((strLine = br.readLine()) != null) {
+                if (strLine.contains("#")) {
+                    String[] aLine = strLine.split("#");
+                    if (aLine.length > 1) {
+                        bookList.add(aLine[0] + "#" + aLine[2]);
+                    }
+
+                }
+
+            }
+            //create table with bookId, book name and cities by joining arrays into a new one
+            for (int i = 0; i < bookList.size(); i++) {
+                for (int j = 0; j < bookIdList.size(); j++) {
+                    if (bookList.get(i).split("#")[0].equals(bookIdList.get(j).split("#")[1])) {
+//                        System.out.println(bookIdList.get(j).split("#")[0] + "#" + bookList.get(i).split("#")[0] + "#" + bookList.get(i).split("#")[1]);
+                        book2List.add(bookIdList.get(j).split("#")[0] + "#" + bookList.get(i).split("#")[0] + "#" + bookList.get(i).split("#")[1]);
+                    }
+                }
+            }
+
+            //
+            for (int i = 0; i < book2List.size(); i++) {
+                String[] cityArr = book2List.get(i).split("#")[2].split(",");
+                for (int j = 0; j < cityArr.length; j++) {
+                    for (int k = 0; k < cityList.size(); k++) {
+                        if (cityArr[j].equals(cityList.get(k).split("#")[1])) {
+                            System.out.println("write");
+                            writer.append(book2List.get(i).split("#")[0] + "#" + cityList.get(k).split("#")[0]);
+                            writer.newLine();
+                        }
+                    }
+
+                }
+            }
+            try {
+                br.close();
+
+            } catch (IOException ex) {
+                Logger.getLogger(Format.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
     public String[] getCities(String path) throws FileNotFoundException, UnsupportedEncodingException, IOException {
         FileIO fio = new FileIO();
         BufferedReader citiesBr = fio.read(path);
