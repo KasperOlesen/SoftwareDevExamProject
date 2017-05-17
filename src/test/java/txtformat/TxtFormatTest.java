@@ -52,25 +52,23 @@ public class TxtFormatTest {
     // The methods must be annotated with annotation @Test. For example:
     //
      @Test
-     @Ignore
      public void getCitiesContentTest() throws UnsupportedEncodingException, IOException {
      FileIO fio = new FileIO();
-     String[] cities = fio.getCities("D:\\school\\test\\cities.txt");
+     String[] cities = fio.getCities("docs/test/testdata/Testcities.txt");
      
      assertThat(cities[0], is("London"));
      assertThat(cities[4], is("Copenhagen"));
      }
      
      @Test
-     @Ignore
      public void writeFormmatedTxtTest() throws UnsupportedEncodingException, IOException {
      FileIO fio = new FileIO();
-     String[] cities = fio.getCities("D:\\school\\test\\cities.txt");
-     String path = "D:\\school\\test\\testWrite.txt";
+     String[] cities = fio.getCities("docs/test/testdata/Testcities.txt");
+     String path = "docs/test/testdata/testWrite.txt";
      BufferedReader br = Mockito.mock(BufferedReader.class);
      
 //     Mockito.when(br.readLine()).thenReturn("aoidfghsohg", "oufuidah", "Title: Test Title", " ", "Author: Test Author", "dfghdfghdfgjr6y", "*** hgdhd GUTENBERG", "AOIHS)DHAHFW London", "iogoushduh Moscow niugsdh", "Paris ogsuhdfgiyush", "     Berlin    " , "Copenhagen");
-     fio.createFormattedTxt(fio.read("D:\\school\\test\\books\\1.txt"), cities, path);
+     fio.createFormattedTxt(fio.read("docs/test/testdata/1.txt"), cities, path);
      
      BufferedReader br1 = fio.read(path);
      assertThat(br1.readLine(), is("Test Book#Test Author#Moscow,London,Copenhagen,Paris,Berlin"));
