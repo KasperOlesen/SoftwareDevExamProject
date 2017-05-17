@@ -3,8 +3,7 @@ package persistence;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;;
+import static org.hamcrest.CoreMatchers.is;import static org.hamcrest.MatcherAssert.assertThat;
 
 import javax.ws.rs.core.Response;
 
@@ -20,7 +19,7 @@ public class GutenbergMysqlTest {
 		assertThat(true, is(true));
 	}
 
-    private static GutenbergMysql createConnector() {
-        return new GutenbergMysql("CONNECTION STRING");
-    }
+	private static GutenbergMysql createConnector() {
+		return new GutenbergMysql("CONNECTION STRING");
+	}
 }

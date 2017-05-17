@@ -1,4 +1,4 @@
-package factories;
+package softDevExam.factories;
 
 import softDevExam.controller.GutenbergController;
 import softDevExam.persistence.GutenbergMysql;
@@ -8,8 +8,9 @@ public class GutenbergControllerFactory {
     private GutenbergMysql sqlHandler;
     private GutenbergNeo4J noSqlHandler;
 
-    public GutenbergControllerFactory() {
-
+    public GutenbergControllerFactory(GutenbergMysql sqlHandler, GutenbergNeo4J noSqlHandler) {
+        this.sqlHandler = sqlHandler;
+        this.noSqlHandler = noSqlHandler;
     }
 
     public GutenbergController create(String databaseType) {

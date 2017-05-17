@@ -7,9 +7,10 @@ import softDevExam.controller.GutenbergService;
 @Stateless
 public class GutenbergMysql implements GutenbergService {
 
-	private final String connectionString;
+	public final String connectionString;
 
 	public GutenbergMysql(String connectionString) {
+        System.out.println("Hall: " + connectionString);
 		this.connectionString = connectionString;
 	}
 
