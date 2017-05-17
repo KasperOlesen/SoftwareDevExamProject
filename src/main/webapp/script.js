@@ -132,7 +132,7 @@ function submit(category){
     url: path,
     type: "GET",
     cache: false,
-    data: JSON.stringify(inputData),
+    data: inputData,
     dataType: "json",
   })
     .done(function (data) {
