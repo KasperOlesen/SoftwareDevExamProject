@@ -16,7 +16,7 @@ import softDevExam.persistence.GutenbergMysql;
 @Path("mysql")
 public class MysqlResource {
 
-	private final GutenbergController controller = new GutenbergController(new GutenbergMysql());
+	private final GutenbergController controller = new GutenbergController(new GutenbergMysql("CONNECTIONSTRING"));
 
 	@Context
 	UriInfo uriInfo;

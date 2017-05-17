@@ -7,8 +7,10 @@ import softDevExam.controller.GutenbergService;
 @Stateless
 public class GutenbergMysql implements GutenbergService {
 
-	public GutenbergMysql() {
-		// TODO Auto-generated constructor stub
+	private final String connectionString;
+
+	public GutenbergMysql(String connectionString) {
+		this.connectionString = connectionString;
 	}
 
 	@Override
