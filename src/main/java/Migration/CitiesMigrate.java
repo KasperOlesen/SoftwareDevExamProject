@@ -50,7 +50,7 @@ public class CitiesMigrate {
     }
 
     public String createSqlString(String id, String name, double latitude, double longitude) {
-        return "INSERT INTO " + this.tableName + " (id, name, latitude, longitude) VALUES (" + id + ", '" + name + "', "
+        return "INSERT INTO " + this.tableName + " (id, name, latitude, longitude) VALUES (" + id + ", '" + name.replace("'", "\\'") + "', "
                 + latitude + ", " + longitude + ");";
     }
 }
