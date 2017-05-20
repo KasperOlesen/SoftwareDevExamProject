@@ -86,7 +86,7 @@ public class BookMigrate {
         StringBuilder strBuilder = new StringBuilder();
 
         for (String author : authors) {
-            String sql = "INSERT INTO Author (name) VALUES ('" + author.replace("'", "\'") + "');\n";
+            String sql = "INSERT INTO Author (name) VALUES ('" + author.replace("'", "\\'") + "');\n";
 
             strBuilder.append(sql);
         }
@@ -101,18 +101,18 @@ public class BookMigrate {
             StringBuilder commandBuilder = new StringBuilder();
 
             // Start by creating the book
-            commandBuilder.append("INSERT INTO Books (id, name) VALUES ('" + book.id + "', '" + book.name.replace("'", "\'") + "');\n");
+            commandBuilder.append("INSERT INTO Books (id, name) VALUES ('" + book.id + "', '" + book.name.replace("'", "\\'") + "');\n");
 
             // Lets add some references to the author
             for (String author : book.authors) {
                 commandBuilder.append("INSERT INTO book_author (bookId, authorId) SELECT '" + book.id
-                        + "', author.id FROM Authors WHERE Name = '" + author.replace("'", "\'") + "';\n");
+                        + "', author.id FROM Authors WHERE Name = '" + author.replace("'", "\\'") + "';\n");
             }
 
             // Lets add some references to the cities
             for (String city : book.cities) {
                 commandBuilder.append("INSERT INTO book_city (bookId, cityId) SELECT '" + book.id
-                        + "', city.id FROM Cities WHERE Name = '" + city.replace("'", "\'") + "';\n");
+                        + "', city.id FROM Cities WHERE Name = '" + city.replace("'", "\\'") + "';\n");
             }
 
             strBuilder.append(commandBuilder);

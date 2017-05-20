@@ -46,10 +46,10 @@ public class BookMigrateTest {
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         String commands = migrator.createMigration(new InputStreamReader(bais));
 
-        String authorsSql = "INSERT INTO Author (name) VALUES ('Dante A\'lighieri');\n";
+        String authorsSql = "INSERT INTO Author (name) VALUES ('Dante A\\'lighieri');\n";
 
         String book1Sql = "INSERT INTO Books (id, name) VALUES ('1cf23a40-4c3c-444c-9014-04eee2211f1a', 'Hell');\n";
-        book1Sql += "INSERT INTO book_author (bookId, authorId) SELECT '1cf23a40-4c3c-444c-9014-04eee2211f1a', author.id FROM Authors WHERE Name = 'Dante A\'lighieri';\n";
+        book1Sql += "INSERT INTO book_author (bookId, authorId) SELECT '1cf23a40-4c3c-444c-9014-04eee2211f1a', author.id FROM Authors WHERE Name = 'Dante A\\'lighieri';\n";
         book1Sql += "INSERT INTO book_city (bookId, cityId) SELECT '1cf23a40-4c3c-444c-9014-04eee2211f1a', city.id FROM Cities WHERE Name = 'Lombard';\n";
 
         String expected = authorsSql + book1Sql;
@@ -69,7 +69,7 @@ public class BookMigrateTest {
 
         String authorsSql = "INSERT INTO Author (name) VALUES ('Dante Alighieri');\n";
 
-        String book1Sql = "INSERT INTO Books (id, name) VALUES ('1cf23a40-4c3c-444c-9014-04eee2211f1a', 'He'll');\n";
+        String book1Sql = "INSERT INTO Books (id, name) VALUES ('1cf23a40-4c3c-444c-9014-04eee2211f1a', 'He\\'ll');\n";
         book1Sql += "INSERT INTO book_author (bookId, authorId) SELECT '1cf23a40-4c3c-444c-9014-04eee2211f1a', author.id FROM Authors WHERE Name = 'Dante Alighieri';\n";
         book1Sql += "INSERT INTO book_city (bookId, cityId) SELECT '1cf23a40-4c3c-444c-9014-04eee2211f1a', city.id FROM Cities WHERE Name = 'Lombard';\n";
 
@@ -92,7 +92,7 @@ public class BookMigrateTest {
 
         String book1Sql = "INSERT INTO Books (id, name) VALUES ('1cf23a40-4c3c-444c-9014-04eee2211f1a', 'Hell');\n";
         book1Sql += "INSERT INTO book_author (bookId, authorId) SELECT '1cf23a40-4c3c-444c-9014-04eee2211f1a', author.id FROM Authors WHERE Name = 'Dante Alighieri';\n";
-        book1Sql += "INSERT INTO book_city (bookId, cityId) SELECT '1cf23a40-4c3c-444c-9014-04eee2211f1a', city.id FROM Cities WHERE Name = 'Lom'bard';\n";
+        book1Sql += "INSERT INTO book_city (bookId, cityId) SELECT '1cf23a40-4c3c-444c-9014-04eee2211f1a', city.id FROM Cities WHERE Name = 'Lom\\'bard';\n";
 
         String expected = authorsSql + book1Sql;
 
