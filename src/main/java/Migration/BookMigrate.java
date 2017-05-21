@@ -44,10 +44,13 @@ public class BookMigrate {
 
                     try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/testprojekt", "root",
                             "")) {
-                        try (Statement st = con.createStatement()) {
-                            st.execute(command);
+                        // We split every command up
+                        for (String subCommand : command.split("\n")) {
+                            try (Statement st = con.createStatement()) {
+                                st.execute(subCommand);
 
-                            System.out.println("Executed! - " + index.getAndIncrement());
+                                System.out.println("Executed! - " + index.getAndIncrement());
+                            }
                         }
                     } catch (SQLException ex) {
                         System.out.println("Could not fire \"" + command + "\" - " + ex.getMessage());
@@ -144,11 +147,11 @@ public class BookMigrate {
             // Lets add some references to the cities
             for (String city : book.cities) {
                 commandBuilder.append("INSERT INTO book_city (bookId, cityId) SELECT '" + book.id
-                        + "', cities.id FROM cities WHERE Name = '" + city.replace("'", "\\'") + "' LIMIT 1;\n");
+                        + "', cities.id FROM cities WHERE Name = '" + city.replace("'", "\\'") + "';\n");
             }
 
             strBuilder.append(commandBuilder);
-            StrBuilder.append("\n");
+            strBuilder.append("\n");
         }
 
         return strBuilder;
