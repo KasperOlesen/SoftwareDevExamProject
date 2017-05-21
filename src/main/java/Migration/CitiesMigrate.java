@@ -4,6 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.concurrent.*;
+import java.sql.*;
 
 public class CitiesMigrate {
     private final String tableName;
@@ -15,12 +19,26 @@ public class CitiesMigrate {
     public void performMigration() throws IOException {
         // Read citites
         final String dir = System.getProperty("user.dir");
-        final String path = dir + "/data/citites.csv";
+        final String path = dir + "/data/cities.csv";
 
         try (FileInputStream stream = new FileInputStream(path)) {
-            String commands = createMigration(new InputStreamReader(stream));
+            String[] strCommands = createMigration(new InputStreamReader(stream)).split("\n");
+            Collection<String> commands = Arrays.asList(strCommands);
 
-            // Fire away the commands
+            // Loop over the commands in paralllel
+            commands.parallelStream().forEach(command -> {
+                // Fire the command against the DB
+
+                try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/testprojekt", "root",
+                        "")) {
+                    try (Statement st = con.createStatement()) {
+                        st.execute(command);
+                        System.out.println("Executed!");
+                    }
+                } catch (SQLException ex) {
+                    System.out.println("Could not fire \"" + command + "\" - " + ex.getMessage());
+                }
+            });
         }
 
         // System.out.println(dir);
@@ -50,7 +68,7 @@ public class CitiesMigrate {
     }
 
     public String createSqlString(String id, String name, double latitude, double longitude) {
-        return "INSERT INTO " + this.tableName + " (id, name, latitude, longitude) VALUES (" + id + ", '" + name.replace("'", "\\'") + "', "
-                + latitude + ", " + longitude + ");";
+        return "INSERT INTO " + this.tableName + " (id, name, latitude, longitude) VALUES (" + id + ", '"
+                + name.replace("'", "\\'") + "', " + latitude + ", " + longitude + ");";
     }
 }

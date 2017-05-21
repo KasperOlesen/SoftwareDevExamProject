@@ -5,7 +5,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import java.sql.*;
+
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.commons.lang3.text.StrBuilder;
 
 public class BookMigrate {
     private final String tableName;
@@ -16,21 +21,45 @@ public class BookMigrate {
         this.bookIdentifierProvider = bookIdentifierProvider;
     }
 
-    public void performMigration() throws IOException {
+    public void performMigration() throws Exception, IOException {
         // Read citites
         final String dir = System.getProperty("user.dir");
-        final String path = dir + "/data/allformatted.csv";
+        final String path = dir + "/data/allformatted.txt";
 
         try (FileInputStream stream = new FileInputStream(path)) {
-            String commands = createMigration(new InputStreamReader(stream));
+            String[] strCommandList = createMigration(new InputStreamReader(stream));
 
-            // Fire away the commands
+            // Since the commands are ordered in the way that they need to be inserted
+            // will should loop over them, and execute the queries in that order, so 
+            // data will not be missing when creating relations
+
+            for (String strCommands : strCommandList) {
+                Collection<String> commands = Arrays.asList(strCommands.split("\n\n"));
+
+                AtomicInteger index = new AtomicInteger();
+
+                // Loop over the commands in paralllel
+                commands.parallelStream().forEach(command -> {
+                    // Fire the command against the DB
+
+                    try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/testprojekt", "root",
+                            "")) {
+                        try (Statement st = con.createStatement()) {
+                            st.execute(command);
+
+                            System.out.println("Executed! - " + index.getAndIncrement());
+                        }
+                    } catch (SQLException ex) {
+                        System.out.println("Could not fire \"" + command + "\" - " + ex.getMessage());
+                    }
+                });
+            }
         }
 
         // System.out.println(dir);
     }
 
-    public String createMigration(InputStreamReader readerStream) throws IOException {
+    public String[] createMigration(InputStreamReader readerStream) throws Exception, IOException {
         List<BookDescription> books = new LinkedList<>();
         Set<String> authors = new HashSet<String>();
         Set<String> cities = new HashSet<String>();
@@ -39,8 +68,18 @@ public class BookMigrate {
             String line = reader.readLine();
 
             while (line != null) {
+                if (line.trim() == "") {
+                    line = reader.readLine();
+                    continue;
+                }
+
                 // We split by '#' because we can! ;') 
                 String[] parts = line.split("#");
+
+                if (parts.length != 3) {
+                    line = reader.readLine();
+                    continue;
+                }
 
                 // Map the data
                 String bookName = parts[0];
@@ -64,29 +103,21 @@ public class BookMigrate {
                 }
 
                 // Finally we should add the book BookDescription
-                books.add(new BookDescription(bookIdentifierProvider.getNextIdentifier(), bookName, bookAuthors, bookCities));
+                books.add(new BookDescription(bookIdentifierProvider.getNextIdentifier(), bookName, bookAuthors,
+                        bookCities));
 
                 line = reader.readLine();
             }
         }
 
-        // Now we have all the books and cities, so we can create the commands;
-        StringBuilder strBuilder = new StringBuilder();
-
-        // We start by creating all the authors;
-        strBuilder.append(createAuthorsCommands(authors));
-
-        // Next we will loop over all the books and create relations
-        strBuilder.append(createBookCommands(books));
-
-        return strBuilder.toString();
+        return new String[] { createAuthorsCommands(authors).toString(), createBookCommands(books).toString() };
     }
 
     public StringBuilder createAuthorsCommands(Set<String> authors) {
         StringBuilder strBuilder = new StringBuilder();
 
         for (String author : authors) {
-            String sql = "INSERT INTO Author (name) VALUES ('" + author.replace("'", "\\'") + "');\n";
+            String sql = "INSERT INTO authors (name) VALUES ('" + author.replace("'", "\\'") + "');\n\n";
 
             strBuilder.append(sql);
         }
@@ -101,21 +132,23 @@ public class BookMigrate {
             StringBuilder commandBuilder = new StringBuilder();
 
             // Start by creating the book
-            commandBuilder.append("INSERT INTO Books (id, name) VALUES ('" + book.id + "', '" + book.name.replace("'", "\\'") + "');\n");
+            commandBuilder.append("INSERT INTO books (id, name) VALUES ('" + book.id + "', '"
+                    + book.name.replace("'", "\\'") + "');\n");
 
             // Lets add some references to the author
             for (String author : book.authors) {
                 commandBuilder.append("INSERT INTO book_author (bookId, authorId) SELECT '" + book.id
-                        + "', author.id FROM Authors WHERE Name = '" + author.replace("'", "\\'") + "';\n");
+                        + "', authors.id FROM authors WHERE Name = '" + author.replace("'", "\\'") + "';\n");
             }
 
             // Lets add some references to the cities
             for (String city : book.cities) {
                 commandBuilder.append("INSERT INTO book_city (bookId, cityId) SELECT '" + book.id
-                        + "', city.id FROM Cities WHERE Name = '" + city.replace("'", "\\'") + "';\n");
+                        + "', cities.id FROM cities WHERE Name = '" + city.replace("'", "\\'") + "' LIMIT 1;\n");
             }
 
             strBuilder.append(commandBuilder);
+            StrBuilder.append("\n");
         }
 
         return strBuilder;
