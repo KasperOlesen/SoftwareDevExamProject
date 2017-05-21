@@ -9,6 +9,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.util.UUID;
 
+import org.junit.*;
+
 public class BookMigrateTest {
     @Test
     public void givenAStream_shouldCreateMultipleCommands() throws Exception, IOException {

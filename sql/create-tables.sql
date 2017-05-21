@@ -47,3 +47,8 @@ CREATE TABLE `testprojekt`.`book_city´` (
     REFERENCES `testprojekt`.`cities` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
+
+ALTER TABLE `testprojekt`.`cities` 
+DROP COLUMN `longitude`,
+DROP COLUMN `latitude`,
+ADD COLUMN `location` POINT NULL COMMENT '' AFTER `name`;

@@ -30,7 +30,7 @@ public class CitiesMigrate {
                 // Fire the command against the DB
 
                 try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/testprojekt", "root",
-                        "")) {
+                        "123123qwe")) {
                     try (Statement st = con.createStatement()) {
                         st.execute(command);
                         System.out.println("Executed!");
@@ -68,7 +68,7 @@ public class CitiesMigrate {
     }
 
     public String createSqlString(String id, String name, double latitude, double longitude) {
-        return "INSERT INTO " + this.tableName + " (id, name, latitude, longitude) VALUES (" + id + ", '"
-                + name.replace("'", "\\'") + "', " + latitude + ", " + longitude + ");";
+        return "INSERT INTO " + this.tableName + " (id, name, location) VALUES (" + id + ", '"
+                + name.replace("'", "\\'") + "', GeomFromText(CONCAT('POINT (', " + longitude + ", ' ', " + latitude + ", ')')));";
     }
 }

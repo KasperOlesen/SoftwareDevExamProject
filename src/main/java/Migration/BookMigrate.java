@@ -40,17 +40,28 @@ public class BookMigrate {
 
                 // Loop over the commands in paralllel
                 commands.parallelStream().forEach(command -> {
-                    // Fire the command against the DB
-
+                    // Fire the command against the DB< 
                     try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/testprojekt", "root",
-                            "")) {
-                        // We split every command up
-                        for (String subCommand : command.split("\n")) {
-                            try (Statement st = con.createStatement()) {
-                                st.execute(subCommand);
+                            "123123qwe")) {
+                        String[] subCommands = command.split("\n");
 
-                                System.out.println("Executed! - " + index.getAndIncrement());
-                            }
+                        try (Statement st = con.createStatement()) {
+                            st.execute(subCommands[0]);
+
+                            System.out.println("Execute command!- " + index.getAndIncrement());
+                        }
+
+                        // We split every command up
+                        if (subCommands.length > 1) {
+                            Arrays.asList(Arrays.copyOfRange(subCommands, 1, subCommands.length)).parallelStream()
+                                    .forEach(subCommand -> {
+                                        try (Statement st = con.createStatement()) {
+                                            st.execute(subCommand);
+                                        } catch (SQLException ex) {
+                                            System.out
+                                                    .println("Could not fire \"" + command + "\" - " + ex.getMessage());
+                                        }
+                                    });
                         }
                     } catch (SQLException ex) {
                         System.out.println("Could not fire \"" + command + "\" - " + ex.getMessage());
