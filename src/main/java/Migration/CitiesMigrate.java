@@ -29,7 +29,7 @@ public class CitiesMigrate {
             commands.parallelStream().forEach(command -> {
                 // Fire the command against the DB
 
-                try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/testprojekt", "root",
+                try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/testprojekt3", "root",
                         "123123qwe")) {
                     try (Statement st = con.createStatement()) {
                         st.execute(command);
