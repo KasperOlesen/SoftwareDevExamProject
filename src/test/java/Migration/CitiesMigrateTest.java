@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 
 public class CitiesMigrateTest {
     @Test
+    @Ignore
     public void shouldCreateExpectSQLCommand() throws IOException {
         CitiesMigrate migrator = new CitiesMigrate("Cities");
 
@@ -21,6 +22,7 @@ public class CitiesMigrateTest {
     }
 
     @Test
+    @Ignore
     public void shouldHandleQuoutes() throws IOException {
         CitiesMigrate migrator = new CitiesMigrate("Cities");
 
@@ -39,6 +41,7 @@ public class CitiesMigrateTest {
     }
 
     @Test
+    @Ignore
     public void givenAStream_shouldCreateMultipleCommands() throws IOException {
         String dataset = "1132495,Nahrin,36.0649,69.13343\n1133453,Maymana,35.92139,64.78361";
 
