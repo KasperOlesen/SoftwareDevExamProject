@@ -32,7 +32,7 @@ CREATE TABLE `testprojekt`.`book_author` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
-CREATE TABLE `testprojekt`.`book_city´` (
+CREATE TABLE `testprojekt`.`book_city` (
   `bookId` VARCHAR(36) NOT NULL COMMENT '',
   `cityId` INT NOT NULL COMMENT '',
   PRIMARY KEY (`bookId`, `cityId`)  COMMENT '',

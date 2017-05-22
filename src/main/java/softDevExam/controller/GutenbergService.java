@@ -1,8 +1,12 @@
 package softDevExam.controller;
 
+import java.util.List;
+
+import softDevExam.entity.Book;
+
 public interface GutenbergService {
 
-	String getBooksByCity(String city);
+	List<Book> getBooksByCity(String city);
 
 	String getCitiesByBook(String book);
 

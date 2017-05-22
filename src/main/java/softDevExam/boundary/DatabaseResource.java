@@ -10,18 +10,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import javax.inject.*;
-
 import softDevExam.controller.GutenbergController;
-import softDevExam.persistence.GutenbergNeo4J;
 
 import softDevExam.factories.*;
 
 @Produces(MediaType.APPLICATION_JSON)
+@Path("")
 public class DatabaseResource {
 
-	@Inject
-	private GutenbergControllerFactory factory;
+	private GutenbergControllerFactory factory = new GutenbergControllerFactory();
 
 	@Context
 	UriInfo uriInfo;
@@ -29,13 +26,12 @@ public class DatabaseResource {
 	@GET
 	@Path("{databaseType}/city")
 	public Response getBooksByCity(@PathParam("databaseType") String databaseType, @QueryParam("city") String city) {
-		GutenbergController controller = this.factory.create(databaseType);
-
+		GutenbergController controller = factory.create(databaseType);
 		return controller.getBooksByCity(city).build();
 	}
 
 	@GET
-	@Path("{databaseType}//book/{book}")
+	@Path("{databaseType}//book")
 	public Response getCitiesByBook(@PathParam("databaseType") String databaseType, @QueryParam("book") String book) {
 		GutenbergController controller = this.factory.create(databaseType);
 
@@ -53,7 +49,8 @@ public class DatabaseResource {
 
 	@GET
 	@Path("{databaseType}//location/{location}")
-	public Response getBooksByLocation(@PathParam("databaseType") String databaseType, @QueryParam("latitude") Double latitude, @QueryParam("longitude") Double longitude) {
+	public Response getBooksByLocation(@PathParam("databaseType") String databaseType,
+			@QueryParam("latitude") Double latitude, @QueryParam("longitude") Double longitude) {
 		GutenbergController controller = this.factory.create(databaseType);
 
 		return controller.getBooksByLocation("").build();

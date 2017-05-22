@@ -1,11 +1,18 @@
 package softDevExam.persistence;
 
+import java.util.List;
+
+import javax.ejb.Stateless;
+
 import softDevExam.controller.GutenbergService;
+import softDevExam.entity.Book;
 
 public class GutenbergNeo4J implements GutenbergService {
 
+	
+
 	@Override
-	public String getBooksByCity(String city) {
+	public List<Book> getBooksByCity(String city) {
 		// TODO Auto-generated method stub
 		return null;
 	}

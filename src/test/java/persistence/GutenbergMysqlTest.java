@@ -14,12 +14,5 @@ import org.junit.Test;
 
 public class GutenbergMysqlTest {
 
-	@Test
-	public void testEnsureCorrectData() {
-		assertThat(true, is(true));
-	}
 
-	private static GutenbergMysql createConnector() {
-		return new GutenbergMysql("CONNECTION STRING");
-	}
 }
