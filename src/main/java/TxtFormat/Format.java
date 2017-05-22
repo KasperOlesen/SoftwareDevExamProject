@@ -20,20 +20,28 @@ import java.io.UnsupportedEncodingException;
 public class Format {
 
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException, IOException {
-        FileIO fio = new FileIO();
+//        FileIO fio = new FileIO();
 
 //        fio.createFormattedTxtAuthor(fio.read("D:\\school\\formatted\\allformatted.txt"), "D:\\school\\formatted\\formattedauthors.txt");
 //        fio.createFormattedTxtBook(fio.read("D:\\school\\formatted\\allformatted.txt"), fio.read("D:\\school\\formatted\\formattedauthors.txt"), "D:\\school\\formatted\\formattedbooks.txt");
 //        fio.createFormattedTxtBookCity(fio.read("data/allformatted.txt"), fio.read("data/cities.txt"), fio.read("data/formattedbooks.txt"), "data/book_city.txt");
-//        CitiesMigrateNeo cmn = new CitiesMigrateNeo();
-//        cmn.performMigration();
-//        AuthorMigrateNeo amn = new AuthorMigrateNeo();
-//        amn.performMigration();
-//
-//        BooksMigrateNeo bmn = new BooksMigrateNeo();
-//        bmn.performMigration();
-          CreateRelationshipsNeo crn = new CreateRelationshipsNeo();
-          crn.performMigration();
+
+
+        
+        CitiesMigrateNeo cmn = new CitiesMigrateNeo();
+        cmn.performMigration();
+        
+        AuthorMigrateNeo amn = new AuthorMigrateNeo();
+        amn.performMigration();
+        
+        BooksMigrateNeo bmn = new BooksMigrateNeo();
+        bmn.performMigration();
+        
+        //Laver relations mellem book og city fra book_city.txt, tager laaang tid
+//          CreateRelationshipsNeo crn = new CreateRelationshipsNeo();
+//          crn.performMigration();
+          
+          
 //        String[] cities = fio.getCities("D:\\school\\cities.txt");
 
 //        Thread t1 = new Thread(new init(cities, "1"));
