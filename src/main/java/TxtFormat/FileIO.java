@@ -254,7 +254,6 @@ public class FileIO {
                 for (int j = 0; j < cityArr.length; j++) {
                     for (int k = 0; k < cityList.size(); k++) {
                         if (cityArr[j].equals(cityList.get(k).split("#")[1])) {
-                            System.out.println("write");
                             writer.append(book2List.get(i).split("#")[0] + "#" + cityList.get(k).split("#")[0]);
                             writer.newLine();
                         }
