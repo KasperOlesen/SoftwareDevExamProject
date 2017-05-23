@@ -71,7 +71,7 @@ public class CitiesMigrate {
             }
         }
 
-        strBuilder.append("INSERT INTO Cities (id, name, location) VALUES " + String.join(", ", sqlParts));
+        strBuilder.append("INSERT INTO cities (id, name, location) VALUES " + String.join(", ", sqlParts));
 
         return strBuilder.toString();
     }

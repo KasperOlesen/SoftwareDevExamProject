@@ -1,6 +1,5 @@
 package softDevExam.persistence;
 
-import java.awt.Point;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.*;
@@ -72,7 +71,8 @@ public class GutenbergMysql implements GutenbergService {
 							bookLookup.put(book.getId(), book);
 						}
 
-						book.getCities().add(new City(rs.getString("cities.name"), rs.getDouble("latitude"), rs.getDouble("longitude")));
+						book.getCities().add(new City(rs.getString("cities.name"), rs.getDouble("latitude"),
+								rs.getDouble("longitude")));
 					}
 				}
 			}
@@ -91,7 +91,8 @@ public class GutenbergMysql implements GutenbergService {
 
 				try (ResultSet rs = ps.executeQuery()) {
 					while (rs.next()) {
-						resultList.add(new City(rs.getString("name"), rs.getDouble("latitude"), rs.getDouble("longitude")));
+						resultList.add(
+								new City(rs.getString("name"), rs.getDouble("latitude"), rs.getDouble("longitude")));
 					}
 				}
 			}
@@ -105,8 +106,9 @@ public class GutenbergMysql implements GutenbergService {
 		List<Book> resultList = new ArrayList<>();
 
 		Map<String, Book> bookLookup = new HashMap<>();
-
+		System.out.println(author);
 		try (Connection conn = getConnection()) {
+			System.out.println("connected");
 			final String command = "SELECT books.*, authors.*, cities.*, X(cities.location) as longitude, Y(cities.location) as latitude FROM authors "
 					+ "JOIN book_author ON (book_author.authorId = authors.id) "
 					+ "JOIN books ON (books.id = book_author.bookId) "
@@ -115,11 +117,10 @@ public class GutenbergMysql implements GutenbergService {
 
 			try (PreparedStatement ps = conn.prepareStatement(command)) {
 				ps.setString(1, author);
-
-				try (ResultSet rs = ps.executeQuery()) {
+				try {
+					ResultSet rs = ps.executeQuery();
 					while (rs.next()) {
 						String bookId = rs.getString("books.id");
-
 						Book book;
 
 						if (bookLookup.containsKey(bookId)) {
@@ -130,9 +131,14 @@ public class GutenbergMysql implements GutenbergService {
 							bookLookup.put(book.getId(), book);
 						}
 
-						book.getCities().add(new City(rs.getString("cities.name"), rs.getDouble("latitude"), rs.getDouble("longitude")));
+						book.getCities().add(new City(rs.getString("cities.name"), rs.getDouble("latitude"),
+								rs.getDouble("longitude")));
 					}
+				} catch (Exception e) {
+
+					// TODO: handle exception
 				}
+
 			}
 		}
 
@@ -140,8 +146,9 @@ public class GutenbergMysql implements GutenbergService {
 	}
 
 	private String getCitiesByBookPS() {
-		return "SELECT cities.name, X(cities.location) as longitude, Y(cities.location) as latitude FROM books " + "JOIN book_city ON (book_city.bookId = books.id) "
-				+ "JOIN cities ON (cities.id = book_city.cityId) " + "WHERE books.name = ?";
+		return "SELECT cities.name, X(cities.location) as longitude, Y(cities.location) as latitude FROM books "
+				+ "JOIN book_city ON (book_city.bookId = books.id) " + "JOIN cities ON (cities.id = book_city.cityId) "
+				+ "WHERE books.name = ?";
 	}
 
 	@Override
@@ -151,7 +158,8 @@ public class GutenbergMysql implements GutenbergService {
 		Map<String, Book> bookLookup = new HashMap<>();
 
 		try (Connection conn = getConnection()) {
-			// Since it not possible to fuck up numbers, we dont need to use parameters.. :D
+			// Since it not possible to fuck up numbers, we dont need to use
+			// parameters.. :D
 			final String command = "SELECT 	books.*, authors.*, cities.*, X(cities.location) as longitude, Y(cities.location) as latitude FROM cities "
 					+ "JOIN book_city ON (book_city.cityId = cities.id) "
 					+ "JOIN books ON (books.id = book_city.bookId) "
@@ -181,7 +189,8 @@ public class GutenbergMysql implements GutenbergService {
 							bookLookup.put(book.getId(), book);
 						}
 
-						book.getCities().add(new City(rs.getString("cities.name"), rs.getDouble("latitude"), rs.getDouble("longitude")));
+						book.getCities().add(new City(rs.getString("cities.name"), rs.getDouble("latitude"),
+								rs.getDouble("longitude")));
 					}
 				}
 			}

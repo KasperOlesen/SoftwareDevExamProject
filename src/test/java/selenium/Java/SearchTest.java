@@ -56,7 +56,6 @@ public class SearchTest {
     }
 
     @Test
-@Ignore
     // Verify that page is loaded and that all input elements are loaded
     public void test1() throws Exception {
         (new WebDriverWait(driver, WAIT_MAX)).until((ExpectedCondition<Boolean>) (WebDriver d) -> {
@@ -69,7 +68,6 @@ public class SearchTest {
     }
 
     @Test
-@Ignore
     // Verify that textinput is available when checkbox (checked: true)
     public void test2() throws Exception {
         WebElement element = driver.findElement(By.id("boxLocation"));
@@ -81,7 +79,6 @@ public class SearchTest {
     }
 
     @Test
-@Ignore
     // Verify that input is cleared when checkbox (checked: false)
     public void test3() throws Exception {
         WebElement element = driver.findElement(By.id("boxAuthor"));
@@ -92,7 +89,6 @@ public class SearchTest {
     }
 
     @Test
-@Ignore
     // Verify that the returned result is not empty
     public void test4() throws Exception {
         WebElement element = driver.findElement(By.id("boxLocation"));
@@ -111,7 +107,6 @@ public class SearchTest {
     }
 
     @Test
-@Ignore
     // Switching DB, test is equal to test4()
     public void test5() throws Exception {
         tearDown();

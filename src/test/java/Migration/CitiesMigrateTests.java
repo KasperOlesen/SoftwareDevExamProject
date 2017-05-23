@@ -44,6 +44,6 @@ public class CitiesMigrateTests {
     }
 
     private static CitiesMigrate createMigrator() {
-        return new CitiesMigrate("jdbc:mysql://localhost:3306/testprojekt5", "root", "123123qwe");
+        return new CitiesMigrate("jdbc:mysql://localhost:3306/testprojekt3", "root", "pwd");
     }
 }

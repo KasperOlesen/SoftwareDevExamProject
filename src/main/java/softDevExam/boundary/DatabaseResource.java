@@ -48,7 +48,7 @@ public class DatabaseResource {
 	}
 
 	@GET
-	@Path("{databaseType}/location")
+	@Path("{databaseType}/geo")
 	public Response getBooksByLocation(@PathParam("databaseType") String databaseType,
 			@QueryParam("latitude") Double latitude, @QueryParam("longitude") Double longitude) {
 		GutenbergController controller = this.factory.create(databaseType);
