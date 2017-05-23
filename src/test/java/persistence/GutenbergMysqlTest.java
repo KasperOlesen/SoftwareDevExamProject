@@ -6,8 +6,7 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import javax.ws.rs.core.Response;
@@ -38,6 +37,10 @@ public class GutenbergMysqlTest {
         List<Book> books = service.getBooksByCity("Covington");
 
         assertThat(books.size(), equalTo(2));
+
+        for(Book book : books) {
+            assertThat(book, notNullValue());
+        }
     }
 
     @Test

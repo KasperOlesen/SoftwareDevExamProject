@@ -31,7 +31,7 @@ public class DatabaseResource {
 	}
 
 	@GET
-	@Path("{databaseType}//book")
+	@Path("{databaseType}/book")
 	public Response getCitiesByBook(@PathParam("databaseType") String databaseType, @QueryParam("book") String book) {
 		GutenbergController controller = this.factory.create(databaseType);
 
@@ -39,7 +39,7 @@ public class DatabaseResource {
 	}
 
 	@GET
-	@Path("{databaseType}//author/{author}")
+	@Path("{databaseType}/author")
 	public Response getBooksAndCitysByAuthor(@PathParam("databaseType") String databaseType,
 			@QueryParam("author") String author) {
 		GutenbergController controller = this.factory.create(databaseType);
@@ -48,7 +48,7 @@ public class DatabaseResource {
 	}
 
 	@GET
-	@Path("{databaseType}//location/{location}")
+	@Path("{databaseType}/location")
 	public Response getBooksByLocation(@PathParam("databaseType") String databaseType,
 			@QueryParam("latitude") Double latitude, @QueryParam("longitude") Double longitude) {
 		GutenbergController controller = this.factory.create(databaseType);
