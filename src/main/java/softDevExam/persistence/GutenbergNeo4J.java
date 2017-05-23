@@ -1,9 +1,11 @@
 package softDevExam.persistence;
 
+import java.sql.SQLException;
 import java.util.*;
 
 import softDevExam.controller.GutenbergService;
 import softDevExam.entity.Book;
+import softDevExam.entity.City;
 
 import org.neo4j.driver.v1.*;
 
@@ -13,7 +15,7 @@ public class GutenbergNeo4J implements GutenbergService {
 	private final AuthToken token;
 
 	public GutenbergNeo4J() {
-		//TODO: Read from properties file
+		// TODO: Read from properties file
 		this("bolt://localhost:7687", AuthTokens.basic("neo4j", "123123qwe"));
 	}
 
@@ -45,13 +47,13 @@ public class GutenbergNeo4J implements GutenbergService {
 	}
 
 	@Override
-	public String getCitiesByBook(String book) {
+	public List<City> getCitiesByBook(String book) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String getBooksAndCitysByAuthor(String author) {
+	public List<Book> getBooksAndCitysByAuthor(String author) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -79,5 +81,4 @@ public class GutenbergNeo4J implements GutenbergService {
 
 		return books;
 	}
-
 }

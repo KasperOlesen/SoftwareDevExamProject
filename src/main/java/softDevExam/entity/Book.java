@@ -1,7 +1,8 @@
 package softDevExam.entity;
 
-public class Book {
+import java.util.List;
 
+public class Book {
 	private String id;
 	private String name;
 

@@ -55,7 +55,7 @@ public class GutenbergControllerTest {
 		Response result = controller.getBooksByCity(city).build();
 		assertThat(result.getEntity(), is(equalTo(books)));
 	}
-
+/*
 	@Test
 	public void testGetCitiesByBookReturnCities() {
 		when(mysqlService.getCitiesByBook(anyString())).thenReturn(city);
@@ -71,7 +71,7 @@ public class GutenbergControllerTest {
 		Response result = controller.getBooksAndCitysByAuthor(author).build();
 		assertThat(result.getEntity(), is(equalTo(city)));
 	}
-
+*/
 	@Test
 	public void testGetBooksByLocation() throws Exception {
 		List<Book> results = new ArrayList<>();
