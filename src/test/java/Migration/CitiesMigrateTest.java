@@ -11,25 +11,23 @@ import java.io.InputStreamReader;
 
 public class CitiesMigrateTest {
     @Test
-    @Ignore
     public void shouldCreateExpectSQLCommand() throws IOException {
         CitiesMigrate migrator = new CitiesMigrate("Cities");
 
         String command = migrator.createSqlString("1", "Test", 1.2, 2.1);
 
         assertThat(command,
-                equalTo("INSERT INTO Cities (id, name, latitude, longitude) VALUES (1, 'Test', 1.2, 2.1);"));
+                equalTo("INSERT INTO Cities (id, name, location) VALUES (1, 'Test', GeomFromText(CONCAT('POINT (', 2.1, ' ', 1.2, ')')));"));
     }
 
     @Test
-    @Ignore
     public void shouldHandleQuoutes() throws IOException {
         CitiesMigrate migrator = new CitiesMigrate("Cities");
 
         String command = migrator.createSqlString("1", "Test2'2123", 1.2, 2.1);
 
-        assertThat(command,
-                equalTo("INSERT INTO Cities (id, name, latitude, longitude) VALUES (1, 'Test2\\'2123', 1.2, 2.1);"));
+        assertThat(command, equalTo(
+                "INSERT INTO Cities (id, name, location) VALUES (1, 'Test2\\'2123', GeomFromText(CONCAT('POINT (', 2.1, ' ', 1.2, ')')));"));
     }
 
     @Test
@@ -41,7 +39,6 @@ public class CitiesMigrateTest {
     }
 
     @Test
-    @Ignore
     public void givenAStream_shouldCreateMultipleCommands() throws IOException {
         String dataset = "1132495,Nahrin,36.0649,69.13343\n1133453,Maymana,35.92139,64.78361";
 
@@ -52,6 +49,6 @@ public class CitiesMigrateTest {
         String commands = migrator.createMigration(new InputStreamReader(bais));
 
         assertThat(commands, equalTo(
-                "INSERT INTO Cities (id, name, latitude, longitude) VALUES (1132495, 'Nahrin', 36.0649, 69.13343);\nINSERT INTO Cities (id, name, latitude, longitude) VALUES (1133453, 'Maymana', 35.92139, 64.78361);\n"));
+                "INSERT INTO Cities (id, name, location) VALUES (1132495, 'Nahrin', GeomFromText(CONCAT('POINT (', 69.13343, ' ', 36.0649, ')')));\nINSERT INTO Cities (id, name, location) VALUES (1133453, 'Maymana', GeomFromText(CONCAT('POINT (', 64.78361, ' ', 35.92139, ')')));\n"));
     }
 }
