@@ -120,11 +120,12 @@ function submit(category){
 
   //Building data-object
   if(category == "geo"){
-    inputData["lat"] = $("#lat").val();
-    inputData["lng"] = $("#lng").val();
+    inputData["latitude"] = $("#lat").val();
+    inputData["longtitude"] = $("#lng").val();
   } else {
     inputData[category] = $("#" + category).val(); 
   }
+
 
   //AJAX call
   $.ajax({
