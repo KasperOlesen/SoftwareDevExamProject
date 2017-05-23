@@ -1,29 +1,33 @@
 package softDevExam.entity;
 
+import java.util.List;
+
 public class Book {
 
-	private String id;
 	private String name;
+	private List<City> cities;
+	private Author author;
 
-	public Book(String id, String name) {
-		this.id = id;
+	public Book(String name, List<City> cities, Author author) {
 		this.name = name;
+		this.cities = cities;
+		this.author = author;
 	}
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
+	public Book(String name) {
+		this.name = name;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public List<City> getCities() {
+		return cities;
+	}
+
+	public Author getAuthor() {
+		return author;
 	}
 
 }
