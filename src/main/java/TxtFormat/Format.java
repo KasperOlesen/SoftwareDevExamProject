@@ -13,6 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import org.neo4j.driver.v1.*;
+
 /**
  *
  * @author Kasper
@@ -28,13 +30,17 @@ public class Format {
 
 
         
-        CitiesMigrateNeo cmn = new CitiesMigrateNeo();
+        CitiesMigrateNeo cmn = new CitiesMigrateNeo(
+                    "bolt://localhost:7687",
+                    AuthTokens.basic("neo4j", "class"));
         cmn.performMigration();
         
         AuthorMigrateNeo amn = new AuthorMigrateNeo();
         amn.performMigration();
         
-        BooksMigrateNeo bmn = new BooksMigrateNeo();
+        BooksMigrateNeo bmn = new BooksMigrateNeo(
+                    "bolt://localhost:7687",
+                    AuthTokens.basic("neo4j", "class"));
         bmn.performMigration();
         
         //Laver relations mellem book og city fra book_city.txt, tager laaang tid

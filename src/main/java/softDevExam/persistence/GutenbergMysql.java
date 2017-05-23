@@ -73,7 +73,7 @@ public class GutenbergMysql implements GutenbergService {
 		try (Connection conn = getConnection()) {
 			PreparedStatement ps = conn.prepareStatement(getBooksByCityPS());
 			ps.setString(1, city);
-			ResultSet rs = ps.executeQuery(getBooksByCityPS());
+			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				books.add(new Book(rs.getString("id"), rs.getString("name")));
 			}

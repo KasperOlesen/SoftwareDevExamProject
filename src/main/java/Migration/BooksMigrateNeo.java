@@ -11,17 +11,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collection;
-import org.neo4j.driver.v1.AuthTokens;
-import org.neo4j.driver.v1.Driver;
-import org.neo4j.driver.v1.GraphDatabase;
-import org.neo4j.driver.v1.Session;
-import org.neo4j.driver.v1.StatementResult;
+import org.neo4j.driver.v1.*;
 
 /**
  *
  * @author Kasper
  */
 public class BooksMigrateNeo {
+    private final String url;
+    private final AuthToken token;
+
+    public BooksMigrateNeo(String url, AuthToken token) {
+        this.url = url;
+        this.token = token;
+    }
 
     public void performMigration() throws IOException {
         // Read citites
@@ -31,17 +34,13 @@ public class BooksMigrateNeo {
         try (FileInputStream stream = new FileInputStream(path)) {
             String[] strCommands = createMigration(new InputStreamReader(stream)).split("\n");
             Collection<String> commands = Arrays.asList(strCommands);
-            Driver driver = GraphDatabase.driver(
-                    "bolt://localhost:7687",
-                    AuthTokens.basic("neo4j", "class"));
+            Driver driver = GraphDatabase.driver(this.url, this.token);
             // Loop over the commands in paralllel
             commands.parallelStream().forEach(command -> {
                 // Fire the command against the DB
 
                 try (Session session = driver.session()) {
                     StatementResult result = session.run(command);
-
-                    System.out.println("Executed!");
                 }
 
             });
@@ -73,6 +72,7 @@ public class BooksMigrateNeo {
     }
 
     public String createCypherString(String id, String authorid, String title) {
-        return "MATCH (a:Author {id: '" + authorid + "'}) CREATE (b:Book {id: '" + id + "', title: '" + title + "'})<-[:HAS_WRITTEN]-(a)";
+        return "MATCH (a:Author {id: '" + authorid + "'}) CREATE (b:Book {id: '" + id + "', title: '" + title
+                + "'})<-[:HAS_WRITTEN]-(a)";
     }
 }

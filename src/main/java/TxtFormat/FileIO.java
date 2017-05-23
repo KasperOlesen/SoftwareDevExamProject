@@ -10,6 +10,7 @@ import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.Writer;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -17,6 +18,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import java.util.UUID;
+
+import Migration.IBookIdentifierProvider;
 
 /**
  *
@@ -125,9 +130,11 @@ public class FileIO {
             Logger.getLogger(Format.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
     public void createFormattedTxtAuthor(BufferedReader br, String path) throws FileNotFoundException, UnsupportedEncodingException, IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path, true))) {
+        createFormattedTxtAuthor(br, new FileWriter(path, true));
+    }
+    public void createFormattedTxtAuthor(BufferedReader br, Writer writerStream) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+        try (BufferedWriter writer = new BufferedWriter(writerStream)) {
 
             String strLine;
             int count = 0;
@@ -153,10 +160,19 @@ public class FileIO {
                 Logger.getLogger(Format.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }    
+    
+    public void createFormattedTxtBook(BufferedReader br, BufferedReader au, String path) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+        createFormattedTxtBook(br, au, new FileWriter(path, true), 
+                new IBookIdentifierProvider() {
+                    public UUID getNextIdentifier() {
+                        return UUID.randomUUID();
+                    }
+                });
     }
 
-    public void createFormattedTxtBook(BufferedReader br, BufferedReader au, String path) throws FileNotFoundException, UnsupportedEncodingException, IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path, true))) {
+    public void createFormattedTxtBook(BufferedReader br, BufferedReader au, Writer writerStream, IBookIdentifierProvider bookIdentifierProvider) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+        try (BufferedWriter writer = new BufferedWriter(writerStream)) {
 
             String strLine;
             String auLine;
@@ -186,7 +202,7 @@ public class FileIO {
             for (int i = 0; i < bookList.size(); i++) {
                 for (int j = 0; j < authorList.size(); j++) {
                     if (bookList.get(i).split("#")[1].equals(authorList.get(j).split("#")[1])) {
-                        writer.append(i + "#" + authorList.get(j).split("#")[0] + "#" + bookList.get(i).split("#")[0]);
+                        writer.append(bookIdentifierProvider.getNextIdentifier() + "#" + authorList.get(j).split("#")[0] + "#" + bookList.get(i).split("#")[0]);
                         writer.newLine();
                     }
                 }
@@ -201,7 +217,11 @@ public class FileIO {
     }
 
     public void createFormattedTxtBookCity(BufferedReader br, BufferedReader ci, BufferedReader brId, String path) throws FileNotFoundException, UnsupportedEncodingException, IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path, true))) {
+        createFormattedTxtBookCity(br, ci, brId, new FileWriter(path, true));
+    }
+
+    public void createFormattedTxtBookCity(BufferedReader br, BufferedReader ci, BufferedReader brId, Writer writerStream) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+        try (BufferedWriter writer = new BufferedWriter(writerStream)) {
 
             String strLine;
             String strIdLine;
