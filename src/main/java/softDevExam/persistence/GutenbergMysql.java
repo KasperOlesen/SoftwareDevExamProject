@@ -134,13 +134,14 @@ public class GutenbergMysql implements GutenbergService {
 					+ " / (111.1 / COS(RADIANS(" + latitude + "))), " + "" + latitude + " - " + radiusInKilometers
 					+ " / 111.1)), " + "cities.location)";
 
-			Statement ps = conn.createStatement();
-			ResultSet rs = ps.executeQuery(command);
+			try (Statement ps = conn.createStatement()) {
+				try (ResultSet rs = ps.executeQuery(command)) {
 
-			while (rs.next()) {
-				books.add(new Book(rs.getString("id"), rs.getString("name")));
+					while (rs.next()) {
+						books.add(new Book(rs.getString("id"), rs.getString("name")));
+					}
+				}
 			}
-
 		}
 
 		return books;
