@@ -13,7 +13,6 @@ import org.junit.*;
 
 public class BookMigrateTest {
     @Test
-    @Ignore
     public void givenAStream_shouldCreateMultipleCommands() throws Exception, IOException {
         String dataset = "Hell#Dante Alighieri#Lombard,Rome\nA Little Pilgrim#Margaret O. (Wilson) Oliphant#Mary,Young";
 
@@ -42,7 +41,6 @@ public class BookMigrateTest {
     }
 
     @Test
-    @Ignore
     public void shouldBeAbleToCreateCommandsWhereAuthorsIncludeQute() throws Exception, IOException {
         String dataset = "Hell#Dante A'lighieri#Lombard\n";
 
@@ -63,7 +61,6 @@ public class BookMigrateTest {
     }
 
     @Test
-    @Ignore
     public void shouldBeAbleToCreateCommandsWhereBookNameIncludeQute() throws Exception, IOException {
         String dataset = "He'll#Dante Alighieri#Lombard\n";
 
@@ -84,7 +81,6 @@ public class BookMigrateTest {
     }
 
     @Test
-    @Ignore
     public void shouldBeAbleToCreateCommandsWhereCityNameIncludeQute() throws Exception, IOException {
         String dataset = "Hell#Dante Alighieri#Lom'bard\n";
 

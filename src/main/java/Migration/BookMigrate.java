@@ -152,13 +152,13 @@ public class BookMigrate {
             // Lets add some references to the author
             for (String author : book.authors) {
                 commandBuilder.append("INSERT INTO book_author (bookId, authorId) SELECT '" + book.id
-                        + "', authors.id FROM authors WHERE Name = '" + author.replace("'", "\\'") + "';\n");
+                        + "', authors.id FROM authors WHERE authors.name = '" + author.replace("'", "\\'") + "';\n");
             }
 
             // Lets add some references to the cities
             for (String city : book.cities) {
                 commandBuilder.append("INSERT INTO book_city (bookId, cityId) SELECT '" + book.id
-                        + "', cities.id FROM cities WHERE Name = '" + city.replace("'", "\\'") + "';\n");
+                        + "', cities.id FROM cities WHERE cities.name = '" + city.replace("'", "\\'") + "';\n");
             }
 
             strBuilder.append(commandBuilder);
