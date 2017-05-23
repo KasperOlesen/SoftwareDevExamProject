@@ -1,64 +1,56 @@
 <!DOCTYPE html>
-
 <html>
-    <head>
-        <title>DB & TEST Exam Project</title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="style.css" type="text/css"/>
+<head>
+<title>DB & TEST Exam Project</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+<body>
+	<br>
+	<br>
+	<div id="mainDiv" class="main">
+		<div id="switchDiv">
+			<h3>Search:</h3>
+			<p>Choose database:</p>
 
-    </head>
-    <body>
-        <br>
-        <br>
-        <div id="mainDiv" class="main">
-            <div id="switchDiv" >
-                <h3>Search:</h3>
-                <p>Choose database:</p>
-
-                <label>MySQL  </label><label class="switch">
-                    <input id="DBswitch" type="checkbox" value="db">
-                    <div id="dbDiv" class="slider round"></div>
-                </label><label>  Neo4J</label>
-            </div>
-            <br>
-            <div id="inputDiv">
-                <form id="inputForm">
-                    <input type="checkbox" id="boxLocation" value="city">
-                    <label class="labelText">City: </label>
-                    <input type="text" id="city" disabled><br>
-
-                    <input type="checkbox" id="boxBook" value="book">
-                    <label class="labelText">Title: </label>
-                    <input type="text" id="book" disabled><br>
-
-                    <input type="checkbox" id="boxAuthor" value="author">
-                    <label class="labelText">Author: </label>
-                    <input type="text" id="author" disabled><br>
-
-                    <input type="checkbox" id="boxGeo" value="geo">
-                    <label class="labelText"> Latitude: </label>
-                    <input type="text" id="lat" disabled> - 
-                    <label class="labelText"> Longitude: </label>
-                    <input type="text" id="lng" disabled><br>
-                    <br>
-                </form>
-            </div>
-            <button id="searchBtn">Search</button>
-            <br>
-            <hr>
-            <div id="resultMap" >
-            </div>
-            <br>
-            <div id="resultDiv">
-                <ul id="resultList"> 
-                </ul>
-            </div>
-        </div>
-        <script src="jquery-3.2.1.min.js"></script>
-         <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFS46TKM8vyiO-SqO-C2qQp3fhX3nD114"
-                type="text/javascript"></script>
-        <script src="gmaps.min.js"></script>
-        <script src="script.js"></script>    
-    </body>
+			<label>MySQL </label><label class="switch"> <input
+				id="DBswitch" type="checkbox" value="db">
+				<div id="dbDiv" class="slider round"></div>
+			</label><label> Neo4J</label>
+		</div>
+		<br>
+		<div id="inputDiv">
+			<form id="inputForm">
+				<input type="checkbox" id="boxLocation" value="city"> <label
+					class="labelText">City: </label> <input type="text" id="city"
+					disabled><br> <input type="checkbox" id="boxBook"
+					value="book"> <label class="labelText">Title: </label> <input
+					type="text" id="book" disabled><br> <input
+					type="checkbox" id="boxAuthor" value="author"> <label
+					class="labelText">Author: </label> <input type="text" id="author"
+					disabled><br> <input type="checkbox" id="boxGeo"
+					value="geo"> <label class="labelText"> Latitude: </label> <input
+					type="text" id="lat" disabled> - <label class="labelText">
+					Longitude: </label> <input type="text" id="lng" disabled><br>
+				<br>
+			</form>
+		</div>
+		<button id="searchBtn">Search</button>
+		<br>
+		<hr>
+		<div id="resultMap"></div>
+		<br>
+		<div id="resultDiv">
+			<ul id="resultList">
+			</ul>
+		</div>
+	</div>
+	<script src="jquery-3.2.1.min.js"></script>
+	<script async defer
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFS46TKM8vyiO-SqO-C2qQp3fhX3nD114"
+		type="text/javascript"></script>
+	<script src="gmaps.min.js"></script>
+	<script src="script.js"></script>
+</body>
 </html>

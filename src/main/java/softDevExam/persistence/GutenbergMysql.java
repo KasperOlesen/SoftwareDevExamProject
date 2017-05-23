@@ -106,9 +106,7 @@ public class GutenbergMysql implements GutenbergService {
 		List<Book> resultList = new ArrayList<>();
 
 		Map<String, Book> bookLookup = new HashMap<>();
-		System.out.println(author);
 		try (Connection conn = getConnection()) {
-			System.out.println("connected");
 			final String command = "SELECT books.*, authors.*, cities.*, X(cities.location) as longitude, Y(cities.location) as latitude FROM authors "
 					+ "JOIN book_author ON (book_author.authorId = authors.id) "
 					+ "JOIN books ON (books.id = book_author.bookId) "

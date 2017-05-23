@@ -107,7 +107,7 @@ function submit(category){
   //       });
 
   var db = "";
-  var path = "http://localhost:3306/testproject3/api/";
+  var path = "http://localhost:3000/softDevExam/api/";
   var inputData = {};
 
   //Setting path to match REST-service
