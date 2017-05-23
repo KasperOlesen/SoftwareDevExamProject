@@ -1,17 +1,10 @@
 package softDevExam.persistence;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
-import javax.ejb.Stateless;
 
 import softDevExam.controller.GutenbergService;
 import softDevExam.entity.Book;
@@ -102,9 +95,32 @@ public class GutenbergMysql implements GutenbergService {
 	}
 
 	@Override
-	public List<Book> getBooksByLocation(double  longitude, double latitude) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Book> getBooksByLocation(double longitude, double latitude) throws Exception {
+		final int radiusInKilometers = 50;
+
+		List<Book> books = new ArrayList<>();
+
+		try (Connection conn = getConnection()) {
+			// Since it not possible to fuck up numbers, we dont need to use parameters.. :D
+			final String command = "SELECT 	books.* FROM cities " + "JOIN book_city ON (book_city.cityId = cities.id) "
+					+ "JOIN books ON (books.id = book_city.bookId) " + "WHERE MBRCONTAINS(LINESTRING(POINT(" + longitude
+					+ " + " + radiusInKilometers + " / (111.1 / COS(RADIANS(" + longitude + "))), " + "" + latitude
+					+ " + " + radiusInKilometers + " / 111.1), " + "POINT(" + longitude + " - " + radiusInKilometers
+					+ " / (111.1 / COS(RADIANS(" + latitude + "))), " + "" + latitude + " - " + radiusInKilometers
+					+ " / 111.1)), " + "cities.location)";
+
+			System.out.println(command);
+
+			Statement ps = conn.createStatement();
+			ResultSet rs = ps.executeQuery(command);
+
+			while (rs.next()) {
+				books.add(new Book(rs.getString("id"), rs.getString("name")));
+			}
+
+		}
+
+		return books;
 	}
 
 }
