@@ -14,6 +14,6 @@ public interface GutenbergService {
 
 	List<Book> getBooksAndCitysByAuthor(String author) throws SQLException;
 
-	List<Book> getBooksByLocation(double latitude, double longitude) throws Exception;
+	List<Book> getBooksByLocation(double longitude, double latitude) throws Exception;
 
 }

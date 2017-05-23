@@ -31,7 +31,8 @@ public class GutenbergControllerTest {
 	@InjectMocks
 	private GutenbergController controller = new GutenbergController();
 
-	private Book book = new Book("testbook");
+	private String city = "Ajax";
+	private Book book = new Book("123", "testbook");
 	private String author = "Frederick Douglass";
 	private String location = "123123";
 	private List<Book> books;
@@ -46,37 +47,40 @@ public class GutenbergControllerTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-	/*-
-		@Test
-		public void testGetBooksByCityReturnBook() throws Exception {
-			when(mysqlService.getBooksByCity(anyString())).thenReturn(books);
-	
-			Response result = controller.getBooksByCity(city).build();
-			assertThat(result.getEntity(), is(equalTo(books)));
-		}
-	
-		@Test
-		public void testGetCitiesByBookReturnCities() {
-			when(mysqlService.getCitiesByBook(anyString())).thenReturn(books);
-	
-			Response result = controller.getCitiesByBook(book.getName()).build();
-			assertThat(result.getEntity(), is(equalTo(books)));
-		}
-	
-		@Test
-		public void testGetBooksAndCitysByAuthor() {
-			when(mysqlService.getBooksAndCitysByAuthor(author)).thenReturn(city);
-	
-			Response result = controller.getBooksAndCitysByAuthor(author).build();
-			assertThat(result.getEntity(), is(equalTo(city)));
-		}
-	
-		@Test
-		public void testGetBooksByLocation() {
-			when(mysqlService.getBooksByLocation(location)).thenReturn(book.getName());
-	
-			Response result = controller.getBooksByLocation(location).build();
-			assertThat(result.getEntity(), is(equalTo("testbook")));
-		}
-	*/
+
+	@Test
+	public void testGetBooksByCityReturnBook() throws Exception {
+		when(mysqlService.getBooksByCity(anyString())).thenReturn(books);
+
+		Response result = controller.getBooksByCity(city).build();
+		assertThat(result.getEntity(), is(equalTo(books)));
+	}
+/*
+	@Test
+	public void testGetCitiesByBookReturnCities() {
+		when(mysqlService.getCitiesByBook(anyString())).thenReturn(city);
+
+		Response result = controller.getCitiesByBook(book.getName()).build();
+		assertThat(result.getEntity(), is(equalTo(city)));
+	}
+
+	@Test
+	public void testGetBooksAndCitysByAuthor() {
+		when(mysqlService.getBooksAndCitysByAuthor(author)).thenReturn(city);
+
+		Response result = controller.getBooksAndCitysByAuthor(author).build();
+		assertThat(result.getEntity(), is(equalTo(city)));
+	}
+*/
+	@Test
+	public void testGetBooksByLocation() throws Exception {
+		List<Book> results = new ArrayList<>();
+		results.add(book);
+
+		when(mysqlService.getBooksByLocation(12.0, 32.0)).thenReturn(results);
+
+		Response result = controller.getBooksByLocation(12.0, 32.0).build();
+		assertThat(result.getEntity(), is(equalTo(results)));
+	}
+
 }

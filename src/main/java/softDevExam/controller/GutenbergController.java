@@ -48,9 +48,9 @@ public class GutenbergController {
 
 	}
 
-	public ResponseBuilder getBooksByLocation(double lat, double lng) {
+	public ResponseBuilder getBooksByLocation(double longitude, double latitude) {
 		try {
-			return Response.status(Status.OK).entity(service.getBooksByLocation(lat, lng));
+			return Response.status(Status.OK).entity(service.getBooksByLocation(longitude, latitude));
 		} catch (Exception e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage());
 		}

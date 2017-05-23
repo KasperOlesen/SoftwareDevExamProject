@@ -53,7 +53,7 @@ public class DatabaseResource {
 			@QueryParam("latitude") Double latitude, @QueryParam("longitude") Double longitude) {
 		GutenbergController controller = this.factory.create(databaseType);
 
-		return controller.getBooksByLocation(latitude, longitude).build();
+		return controller.getBooksByLocation(longitude.doubleValue(), latitude.doubleValue()).build();
 	}
 
 }

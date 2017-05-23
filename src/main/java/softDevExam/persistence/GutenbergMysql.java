@@ -62,7 +62,7 @@ public class GutenbergMysql implements GutenbergService {
 
 		ResultSet rs = getResults(city, getBooksByCityPS());
 		while (rs.next()) {
-			resultList.add(new Book(rs.getString("name")));
+			resultList.add(new Book(rs.getString("id"), rs.getString("name")));
 		}
 
 		return resultList;
@@ -74,7 +74,6 @@ public class GutenbergMysql implements GutenbergService {
 		ResultSet rs = getResults(book, getCitiesByBookPS());
 		while (rs.next()) {
 			Point p = (Point) rs.getObject("location");
-
 			resultList.add(new City(rs.getString("name"), p.getX(), p.getY()));
 		}
 
@@ -87,7 +86,7 @@ public class GutenbergMysql implements GutenbergService {
 
 		ResultSet rs = getResults(author, getBooksAndCitysByAuthorPS());
 		while (rs.next()) {
-			resultList.add(new Book(rs.getString("name")));
+			resultList.add(new Book(rs.getString("id"), rs.getString("name")));
 		}
 
 		return resultList;
