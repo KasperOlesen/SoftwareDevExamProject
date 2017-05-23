@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import org.neo4j.driver.v1.*;
@@ -26,27 +27,27 @@ public class BooksMigrateNeo {
         this.token = token;
     }
 
-    public void performMigration() throws IOException {
+    public void performMigration(String filePath) throws IOException {
         // Read citites
         final String dir = System.getProperty("user.dir");
-        final String path = dir + "/data/formattedbooks.txt";
+        final String path = dir + filePath;
 
-        try (FileInputStream stream = new FileInputStream(path)) {
-            String[] strCommands = createMigration(new InputStreamReader(stream)).split("\n");
-            Collection<String> commands = Arrays.asList(strCommands);
-            Driver driver = GraphDatabase.driver(this.url, this.token);
-            // Loop over the commands in paralllel
-            commands.parallelStream().forEach(command -> {
-                // Fire the command against the DB
+        performMigration(new FileInputStream(path));
+    }
 
-                try (Session session = driver.session()) {
-                    StatementResult result = session.run(command);
-                }
+    public void performMigration(InputStream stream) throws IOException {
+        String[] strCommands = createMigration(new InputStreamReader(stream, "UTF8")).split("\n");
+        Collection<String> commands = Arrays.asList(strCommands);
+        Driver driver = GraphDatabase.driver(this.url, this.token);
+        // Loop over the commands in paralllel
+        commands.parallelStream().forEach(command -> {
+            // Fire the command against the DB
 
-            });
-        }
+            try (Session session = driver.session()) {
+                StatementResult result = session.run(command);
+            }
 
-        // System.out.println(dir);
+        });
     }
 
     public String createMigration(InputStreamReader readerStream) throws IOException {

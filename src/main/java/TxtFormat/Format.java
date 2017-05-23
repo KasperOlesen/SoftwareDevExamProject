@@ -33,19 +33,22 @@ public class Format {
         CitiesMigrateNeo cmn = new CitiesMigrateNeo(
                     "bolt://localhost:7687",
                     AuthTokens.basic("neo4j", "class"));
-        cmn.performMigration();
+        cmn.performMigration("/data/cities.csv");
         
-        AuthorMigrateNeo amn = new AuthorMigrateNeo();
-        amn.performMigration();
+        AuthorMigrateNeo amn = new AuthorMigrateNeo("bolt://localhost:7687",
+                AuthTokens.basic("neo4j", "class"));
+        amn.performMigration("/data/formattedauthors.txt");
         
         BooksMigrateNeo bmn = new BooksMigrateNeo(
                     "bolt://localhost:7687",
                     AuthTokens.basic("neo4j", "class"));
-        bmn.performMigration();
+        bmn.performMigration("/data/formattedbooks.txt");
         
         //Laver relations mellem book og city fra book_city.txt, tager laaang tid
-//          CreateRelationshipsNeo crn = new CreateRelationshipsNeo();
-//          crn.performMigration();
+         CreateRelationshipsNeo crn = new CreateRelationshipsNeo(
+                    "bolt://localhost:7687",
+                    AuthTokens.basic("neo4j", "class"));
+         crn.performMigration("/data/book_city.txt");
           
           
 //        String[] cities = fio.getCities("D:\\school\\cities.txt");

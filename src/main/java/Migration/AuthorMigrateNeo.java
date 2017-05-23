@@ -7,46 +7,47 @@ package Migration;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collection;
-import org.neo4j.driver.v1.AuthTokens;
-import org.neo4j.driver.v1.Driver;
-import org.neo4j.driver.v1.GraphDatabase;
-import org.neo4j.driver.v1.Session;
-import org.neo4j.driver.v1.StatementResult;
+import org.neo4j.driver.v1.*;
 
 /**
  *
  * @author Kasper
  */
 public class AuthorMigrateNeo {
-    public void performMigration() throws IOException {
+    private final String url;
+    private final AuthToken token;
+
+    public AuthorMigrateNeo(String url, AuthToken token) {
+        this.url = url;
+        this.token = token;
+    }
+
+    public void performMigration(String filePath) throws IOException {
         // Read citites
         final String dir = System.getProperty("user.dir");
-        final String path = dir + "/data/formattedauthors.txt";
+        final String path = dir + filePath;
 
-        try (FileInputStream stream = new FileInputStream(path)) {
-            String[] strCommands = createMigration(new InputStreamReader(stream)).split("\n");
+        performMigration(new FileInputStream(path));
+    }
+
+    public void performMigration(InputStream stream) throws IOException {
+        String[] strCommands = createMigration(new InputStreamReader(stream, "UTF8")).split("\n");
             Collection<String> commands = Arrays.asList(strCommands);
-            Driver driver = GraphDatabase.driver(
-                    "bolt://localhost:7687",
-                    AuthTokens.basic("neo4j", "class"));
+            Driver driver = GraphDatabase.driver(this.url, this.token);
             // Loop over the commands in paralllel
             commands.parallelStream().forEach(command -> {
                 // Fire the command against the DB
 
                 try (Session session = driver.session()) {
-                    StatementResult result = session.run(command);
-
-                    System.out.println("Executed!");
+                    session.run(command);
                 }
 
             });
-        }
-
-        // System.out.println(dir);
     }
 
     public String createMigration(InputStreamReader readerStream) throws IOException {
@@ -54,12 +55,11 @@ public class AuthorMigrateNeo {
 
         try (BufferedReader reader = new BufferedReader(readerStream)) {
             String line = reader.readLine();
-
+            
             while (line != null) {
                 String[] parts = line.split("#");
 
                 String id = parts[0];
-                System.out.println(id);
                 String name = parts[1].replace("'", "`");
 
                 strBuilder.append(createCypherString(id, name) + "\n");

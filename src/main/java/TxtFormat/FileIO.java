@@ -135,7 +135,6 @@ public class FileIO {
     }
     public void createFormattedTxtAuthor(BufferedReader br, Writer writerStream) throws FileNotFoundException, UnsupportedEncodingException, IOException {
         try (BufferedWriter writer = new BufferedWriter(writerStream)) {
-
             String strLine;
             int count = 0;
             ArrayList<String> authorList = new ArrayList();

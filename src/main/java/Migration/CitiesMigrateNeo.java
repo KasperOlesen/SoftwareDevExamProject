@@ -11,11 +11,11 @@ package Migration;
  */
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.concurrent.*;
 import org.neo4j.driver.v1.*;
 
 public class CitiesMigrateNeo {
@@ -28,27 +28,27 @@ public class CitiesMigrateNeo {
         this.token = token;
     }
 
-    public void performMigration() throws IOException {
+    public void performMigration(String filePath) throws IOException {
         // Read citites
         final String dir = System.getProperty("user.dir");
-        final String path = dir + "/data/cities.csv";
+        final String path = dir + filePath;
 
-        try (FileInputStream stream = new FileInputStream(path)) {
-            String[] strCommands = createMigration(new InputStreamReader(stream)).split("\n");
-            Collection<String> commands = Arrays.asList(strCommands);
-            Driver driver = GraphDatabase.driver(this.url, this.token);
-            // Loop over the commands in paralllel
-            commands.parallelStream().forEach(command -> {
-                // Fire the command against the DB
+        performMigration(new FileInputStream(path));
+    }
 
-                try (Session session = driver.session()) {
-                    StatementResult result = session.run(command);
+    public void performMigration(InputStream stream) throws IOException {
+        String[] strCommands = createMigration(new InputStreamReader(stream, "UTF8")).split("\n");
+        Collection<String> commands = Arrays.asList(strCommands);
+        Driver driver = GraphDatabase.driver(this.url, this.token);
+        // Loop over the commands in paralllel
+        commands.parallelStream().forEach(command -> {
+            // Fire the command against the DB
 
-                    System.out.println("Executed!");
-                }
+            try (Session session = driver.session()) {
+                session.run(command);
+            }
 
-            });
-        }
+        });
 
         // System.out.println(dir);
     }
@@ -77,6 +77,7 @@ public class CitiesMigrateNeo {
     }
 
     public String createCypherString(String id, String name, double latitude, double longitude) {
-        return "CREATE (c:City {id: '" + id + "', name: '" + name + "', lat: '" + latitude + "', lng: '" + longitude + "'})";
+        return "CREATE (c:City {id: '" + id + "', name: '" + name + "', lat: '" + latitude + "', lng: '" + longitude
+                + "'})";
     }
 }
