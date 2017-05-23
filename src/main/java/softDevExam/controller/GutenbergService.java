@@ -12,6 +12,6 @@ public interface GutenbergService {
 
 	String getBooksAndCitysByAuthor(String author);
 
-	String getBooksByLocation(String location);
+	List<Book> getBooksByLocation(double longitude, double latitude) throws Exception;
 
 }

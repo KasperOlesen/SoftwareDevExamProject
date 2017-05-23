@@ -102,9 +102,9 @@ public class GutenbergMysql implements GutenbergService {
 	}
 
 	@Override
-	public String getBooksByLocation(String location) {
+	public List<Book> getBooksByLocation(double  longitude, double latitude) throws Exception {
 		// TODO Auto-generated method stub
-		return "";
+		return null;
 	}
 
 }

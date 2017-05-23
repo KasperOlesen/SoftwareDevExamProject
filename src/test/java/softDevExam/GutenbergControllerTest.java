@@ -73,11 +73,14 @@ public class GutenbergControllerTest {
 	}
 
 	@Test
-	public void testGetBooksByLocation() {
-		when(mysqlService.getBooksByLocation(location)).thenReturn(book.getName());
+	public void testGetBooksByLocation() throws Exception {
+		List<Book> results = new ArrayList<>();
+		results.add(book);
 
-		Response result = controller.getBooksByLocation(location).build();
-		assertThat(result.getEntity(), is(equalTo("testbook")));
+		when(mysqlService.getBooksByLocation(12.0, 32.0)).thenReturn(results);
+
+		Response result = controller.getBooksByLocation(12.0, 32.0).build();
+		assertThat(result.getEntity(), is(equalTo(results)));
 	}
 
 }

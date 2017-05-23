@@ -36,6 +36,16 @@ public class GutenbergNeoTest {
         assertThat(books.size(), equalTo(2));
     }
 
+    @Test
+    public void givenAGeolocationYourApplicationListsAllBooksMentioningACityInVicinityOfTheGivenGeolocation()
+            throws Exception {
+        GutenbergNeo4J service = createService();
+
+        List<Book> books = service.getBooksByLocation(-84.77217, 37.64563);
+
+        assertThat(books.size(), equalTo(2));
+    }
+
     private static GutenbergNeo4J createService() {
         return new GutenbergNeo4J("bolt://localhost:7687", AuthTokens.basic("neo4j", "123123qwe"));
     }
