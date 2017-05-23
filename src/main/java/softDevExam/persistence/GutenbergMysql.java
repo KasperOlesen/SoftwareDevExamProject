@@ -18,37 +18,58 @@ import softDevExam.entity.Book;
 
 public class GutenbergMysql implements GutenbergService {
 
-	public static Connection getConnection() {
+	private final String url;
+	private final String username;
+	private final String password;
+	private final String driver;
+
+	public GutenbergMysql() {
 		Properties props = new Properties();
-		Connection con = null;
+
+		String url = null, username = null, password = null, driver = null;
+
 		try {
 			InputStream stream = GutenbergMysql.class.getResourceAsStream("/data/db.properties");
 			props.load(stream);
 
 			// load the Driver
-			Class.forName(props.getProperty("MYSQL_DRIVER_CLASS"));
+			driver = props.getProperty("MYSQL_DRIVER_CLASS");
+			url = props.getProperty("MYSQL_URL");
+			username = props.getProperty("MYSQL_USERNAME");
+			password = props.getProperty("DB_PASSWORD");
 
-			// create the connection
-			con = DriverManager.getConnection(props.getProperty("MYSQL_URL"), props.getProperty("MYSQL_USERNAME"),
-					props.getProperty("DB_PASSWORD"));
-
-		} catch (SQLException | IOException | ClassNotFoundException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return con;
+
+		this.driver = driver;
+		this.url = url;
+		this.username = username;
+		this.password = password;
 	}
 
-	private void setDriver(String driver) {
+	public GutenbergMysql(String driver, String url, String username, String password) {
+		this.driver = driver;
+		this.url = url;
+		this.username = username;
+		this.password = password;
+	}
+
+	public Connection getConnection() throws Exception {
 		try {
-			Class.forName(driver);
+			Class.forName(this.driver);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
+
 		}
+
+		return DriverManager.getConnection(this.url, this.username, this.password);
 	}
 
 	@Override
-	public List<Book> getBooksByCity(String city) {
-		List<Book> books = new ArrayList();
+	public List<Book> getBooksByCity(String city) throws Exception {
+		List<Book> books = new ArrayList<>();
+
 		try (Connection conn = getConnection()) {
 			PreparedStatement ps = conn.prepareStatement(getBooksByCityPS());
 			ps.setString(1, city);
@@ -57,18 +78,15 @@ public class GutenbergMysql implements GutenbergService {
 				books.add(new Book(rs.getString("id"), rs.getString("name")));
 			}
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
 		}
+
 		return books;
 	}
 
 	private String getBooksByCityPS() {
-		return "SELECT * FROM books " + "JOIN book_author ON (book_author.bookId = books.id) "
-				+ "JOIN authors ON (authors.id = book_author.authorId) "
-				+ "WHERE EXISTS (SELECT 1 FROM book_city JOIN cities ON (cities.id = book_city.cityId) "
-				+ "WHERE book_city.bookId = books.id AND cities.name = ?";
+		return "SELECT * FROM books JOIN book_author ON (book_author.bookId = books.id) "
+				+ " JOIN authors ON (authors.id = book_author.authorId) "
+				+ " WHERE EXISTS (SELECT 1 FROM book_city JOIN cities ON (cities.id = book_city.cityId) WHERE book_city.bookId = books.id AND cities.name = ?)";
 	}
 
 	@Override

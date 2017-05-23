@@ -49,7 +49,7 @@ public class GutenbergControllerTest {
 	}
 
 	@Test
-	public void testGetBooksByCityReturnBook() {
+	public void testGetBooksByCityReturnBook() throws Exception {
 		when(mysqlService.getBooksByCity(anyString())).thenReturn(books);
 
 		Response result = controller.getBooksByCity(city).build();

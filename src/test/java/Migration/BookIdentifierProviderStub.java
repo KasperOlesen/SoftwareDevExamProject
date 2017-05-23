@@ -16,6 +16,6 @@ public class BookIdentifierProviderStub implements IBookIdentifierProvider {
             return UUID.fromString("792f42e0-7ae4-44dd-a197-eeb4a66f8c42");
         }
 
-        return null;
+        return UUID.randomUUID();
     }
 }

@@ -5,7 +5,6 @@ import java.io.IOException;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.Test;
-import org.junit.Ignore;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 
@@ -28,14 +27,6 @@ public class CitiesMigrateTests {
 
         assertThat(command, equalTo(
                 "INSERT INTO Cities (id, name, location) VALUES (1, 'Test2\\'2123', GeomFromText(CONCAT('POINT (', 2.1, ' ', 1.2, ')')));"));
-    }
-
-    @Test
-    public void performMigration_shouldInsertAllCities() throws IOException {
-        CitiesMigrate migrator = createMigrator();
-
-        // /data/cities.csv
-        migrator.performMigration("/data/test-data/cities.csv");
     }
 
     @Test

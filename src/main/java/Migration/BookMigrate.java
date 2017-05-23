@@ -4,16 +4,15 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.InputStream;
 
 import java.sql.*;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.lang3.text.StrBuilder;
-
 public class BookMigrate {
-    
+
     private final String url;
     private final String username;
     private final String password;
@@ -31,48 +30,46 @@ public class BookMigrate {
         final String dir = System.getProperty("user.dir");
         final String path = dir + filePath;
 
-        try (FileInputStream stream = new FileInputStream(path)) {
-            String[] strCommandList = createMigration(new InputStreamReader(stream, "UTF8"));
+        performMigration(new FileInputStream(path));
+    }
 
-            // Since the commands are ordered in the way that they need to be inserted
-            // will should loop over them, and execute the queries in that order, so 
-            // data will not be missing when creating relations
+    public void performMigration(InputStream stream) throws Exception, IOException {
+        String[] strCommandList = createMigration(new InputStreamReader(stream, "UTF8"));
 
-            for (String strCommands : strCommandList) {
-                Collection<String> commands = Arrays.asList(strCommands.split("\n\n"));
+        // Since the commands are ordered in the way that they need to be inserted
+        // will should loop over them, and execute the queries in that order, so 
+        // data will not be missing when creating relations
 
-                AtomicInteger index = new AtomicInteger();
+        for (String strCommands : strCommandList) {
+            Collection<String> commands = Arrays.asList(strCommands.split("\n\n"));
 
-                // Loop over the commands in paralllel
-                commands.parallelStream().forEach(command -> {
-                    // Fire the command against the DB< 
-                    try (Connection con = DriverManager.getConnection(this.url, this.username, this.password)) {
-                        String[] subCommands = command.split("\n");
+            AtomicInteger index = new AtomicInteger();
 
-                        try (Statement st = con.createStatement()) {
-                            st.execute(subCommands[0]);
+            // Loop over the commands in paralllel
+            commands.parallelStream().forEach(command -> {
+                // Fire the command against the DB< 
+                try (Connection con = DriverManager.getConnection(this.url, this.username, this.password)) {
+                    String[] subCommands = command.split("\n");
 
-                            System.out.println(subCommands[0]);
-                            System.out.println("Execute command!- " + index.getAndIncrement());
-                        }
-
-                        // We split every command up
-                        if (subCommands.length > 1) {
-                            Arrays.asList(Arrays.copyOfRange(subCommands, 1, subCommands.length)).parallelStream()
-                                    .forEach(subCommand -> {
-                                        try (Statement st = con.createStatement()) {
-                                            st.execute(subCommand);
-                                        } catch (SQLException ex) {
-                                            System.out
-                                                    .println("Could not fire \"" + command + "\" - " + ex.getMessage());
-                                        }
-                                    });
-                        }
-                    } catch (SQLException ex) {
-                        System.out.println("Could not fire \"" + command + "\" - " + ex.getMessage());
+                    try (Statement st = con.createStatement()) {
+                        st.execute(subCommands[0]);
                     }
-                });
-            }
+
+                    // We split every command up
+                    if (subCommands.length > 1) {
+                        Arrays.asList(Arrays.copyOfRange(subCommands, 1, subCommands.length)).parallelStream()
+                                .forEach(subCommand -> {
+                                    try (Statement st = con.createStatement()) {
+                                        st.execute(subCommand);
+                                    } catch (SQLException ex) {
+                                        System.out.println("Could not fire \"" + command + "\" - " + ex.getMessage());
+                                    }
+                                });
+                    }
+                } catch (SQLException ex) {
+                    System.out.println("Could not fire \"" + command + "\" - " + ex.getMessage());
+                }
+            });
         }
 
         // System.out.println(dir);

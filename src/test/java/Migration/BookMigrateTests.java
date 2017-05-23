@@ -8,11 +8,9 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.util.UUID;
-import org.junit.runners.MethodSorters;
-
-import org.junit.*;
 
 public class BookMigrateTests {
+
     @Test
     public void givenAStream_shouldCreateMultipleCommands() throws Exception, IOException {
         String dataset = "Hell#Dante Alighieri#Lombard,Rome\nA Little Pilgrim#Margaret O. (Wilson) Oliphant#Mary,Young";
@@ -100,19 +98,7 @@ public class BookMigrateTests {
         assertThat(commands[0], equalTo(authorsSql));
         assertThat(commands[1], equalTo(book1Sql));
     }
-
-    @Test
-    public void performMigration_shouldInsertAllData() throws Exception, IOException {
-        BookMigrate migrator = createMigrator(new IBookIdentifierProvider() {
-            public UUID getNextIdentifier() {
-                return UUID.randomUUID();
-            }
-        });
-
-        // "/data/allformatted.txt"
-        migrator.performMigration("/data/test-data/books.csv");
-    }
-
+    
     private static BookMigrate createMigrator(IBookIdentifierProvider bookIdentifierProvider) {
         return new BookMigrate("jdbc:mysql://localhost:3306/testprojekt5", "root", "123123qwe", bookIdentifierProvider);
     }

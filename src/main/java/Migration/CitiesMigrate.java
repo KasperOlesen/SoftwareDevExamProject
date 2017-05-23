@@ -3,10 +3,11 @@ package Migration;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.concurrent.*;
+
 import java.sql.*;
 
 public class CitiesMigrate {
@@ -25,25 +26,25 @@ public class CitiesMigrate {
         final String dir = System.getProperty("user.dir");
         final String path = dir + filePath;
 
-        try (FileInputStream stream = new FileInputStream(path)) {
-            String[] strCommands = createMigration(new InputStreamReader(stream, "UTF8")).split("\n");
-            Collection<String> commands = Arrays.asList(strCommands);
+        performMigration(new FileInputStream(path));
+    }
 
-            // Loop over the commands in paralllel
-            commands.parallelStream().forEach(command -> {
-                // Fire the command against the DB
+    public void performMigration(InputStream stream) throws IOException {
+        String[] strCommands = createMigration(new InputStreamReader(stream, "UTF8")).split("\n");
+        Collection<String> commands = Arrays.asList(strCommands);
 
-                try (Connection con = DriverManager.getConnection(this.url, this.username, this.password)) {
-                    try (Statement st = con.createStatement()) {
-                        st.execute(command);
-                    }
-                } catch (SQLException ex) {
-                    System.out.println("Could not fire \"" + command + "\" - " + ex.getMessage());
+        // Loop over the commands in paralllel
+        commands.parallelStream().forEach(command -> {
+            // Fire the command against the DB
+
+            try (Connection con = DriverManager.getConnection(this.url, this.username, this.password)) {
+                try (Statement st = con.createStatement()) {
+                    st.execute(command);
                 }
-            });
-        }
-
-        // System.out.println(dir);
+            } catch (SQLException ex) {
+                System.out.println("Could not fire \"" + command + "\" - " + ex.getMessage());
+            }
+        });
     }
 
     public String createMigration(InputStreamReader readerStream) throws IOException {
@@ -70,7 +71,7 @@ public class CitiesMigrate {
     }
 
     public String createSqlString(String id, String name, double latitude, double longitude) {
-        return "INSERT INTO Cities (id, name, location) VALUES (" + id + ", '"
-                + name.replace("'", "\\'") + "', GeomFromText(CONCAT('POINT (', " + longitude + ", ' ', " + latitude + ", ')')));";
+        return "INSERT INTO Cities (id, name, location) VALUES (" + id + ", '" + name.replace("'", "\\'")
+                + "', GeomFromText(CONCAT('POINT (', " + longitude + ", ' ', " + latitude + ", ')')));";
     }
 }

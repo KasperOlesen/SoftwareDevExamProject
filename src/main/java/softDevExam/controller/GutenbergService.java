@@ -6,7 +6,7 @@ import softDevExam.entity.Book;
 
 public interface GutenbergService {
 
-	List<Book> getBooksByCity(String city);
+	List<Book> getBooksByCity(String city) throws Exception;
 
 	String getCitiesByBook(String book);
 
