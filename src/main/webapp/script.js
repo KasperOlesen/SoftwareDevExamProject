@@ -47,7 +47,6 @@ $('#inputDiv').contents().find(":checkbox").bind('change', function(){
 //Click to submit
 $("#searchBtn").click(function(){
   $('#inputForm > input[type=checkbox]').each(function(){
-    console.log(this.value)
     if($(this).is(":checked")){
       submit(this.value);
     }
@@ -88,27 +87,27 @@ function submit(category){
 
   $("#resultList").empty();
 
-  //TEST CODE
-  var testData = [{
-    "city": "copenhagen",
-    "lat": "55.676098",
-    "lng": "12.568337"
-  },{
-    "city": "stockholm",
-    "lat": "59.3289",
-    "lng": "18.0649"
-  },{
-    "city": "paris",
-    "lat": "48.8566",
-    "lng": "2.3522"
-  }];
-  loadMarkers(testData);
-  $.each(testData, function(i, value) {
-          $("#resultList").append($("<li>").text(JSON.stringify(value)));
-        });
+  // //TEST CODE
+  // var testData = [{
+  //   "city": "copenhagen",
+  //   "lat": "55.676098",
+  //   "lng": "12.568337"
+  // },{
+  //   "city": "stockholm",
+  //   "lat": "59.3289",
+  //   "lng": "18.0649"
+  // },{
+  //   "city": "paris",
+  //   "lat": "48.8566",
+  //   "lng": "2.3522"
+  // }];
+  // loadMarkers(testData);
+  // $.each(testData, function(i, value) {
+  //         $("#resultList").append($("<li>").text(JSON.stringify(value)));
+  //       });
 
   var db = "";
-  var path = "/api/";
+  var path = "http://localhost:3306/testproject3/api/";
   var inputData = {};
 
   //Setting path to match REST-service
@@ -131,9 +130,7 @@ function submit(category){
   $.ajax({
     url: path,
     type: "GET",
-    cache: false,
     data: inputData,
-    dataType: "json",
   })
     .done(function (data) {
 
