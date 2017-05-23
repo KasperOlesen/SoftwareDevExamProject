@@ -10,30 +10,32 @@ import java.util.concurrent.*;
 import java.sql.*;
 
 public class CitiesMigrate {
-    private final String tableName;
+    private final String url;
+    private final String username;
+    private final String password;
 
-    public CitiesMigrate(String tableName) {
-        this.tableName = tableName;
+    public CitiesMigrate(String url, String username, String password) {
+        this.url = url;
+        this.username = username;
+        this.password = password;
     }
 
-    public void performMigration() throws IOException {
+    public void performMigration(String filePath) throws IOException {
         // Read citites
         final String dir = System.getProperty("user.dir");
-        final String path = dir + "/data/cities.csv";
+        final String path = dir + filePath;
 
         try (FileInputStream stream = new FileInputStream(path)) {
-            String[] strCommands = createMigration(new InputStreamReader(stream)).split("\n");
+            String[] strCommands = createMigration(new InputStreamReader(stream, "UTF8")).split("\n");
             Collection<String> commands = Arrays.asList(strCommands);
 
             // Loop over the commands in paralllel
             commands.parallelStream().forEach(command -> {
                 // Fire the command against the DB
 
-                try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/testprojekt3", "root",
-                        "123123qwe")) {
+                try (Connection con = DriverManager.getConnection(this.url, this.username, this.password)) {
                     try (Statement st = con.createStatement()) {
                         st.execute(command);
-                        System.out.println("Executed!");
                     }
                 } catch (SQLException ex) {
                     System.out.println("Could not fire \"" + command + "\" - " + ex.getMessage());
@@ -68,7 +70,7 @@ public class CitiesMigrate {
     }
 
     public String createSqlString(String id, String name, double latitude, double longitude) {
-        return "INSERT INTO " + this.tableName + " (id, name, location) VALUES (" + id + ", '"
+        return "INSERT INTO Cities (id, name, location) VALUES (" + id + ", '"
                 + name.replace("'", "\\'") + "', GeomFromText(CONCAT('POINT (', " + longitude + ", ' ', " + latitude + ", ')')));";
     }
 }

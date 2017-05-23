@@ -58,6 +58,7 @@ public class GutenbergMysql implements GutenbergService {
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 		return books;

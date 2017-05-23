@@ -8,15 +8,16 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.util.UUID;
+import org.junit.runners.MethodSorters;
 
 import org.junit.*;
 
-public class BookMigrateTest {
+public class BookMigrateTests {
     @Test
     public void givenAStream_shouldCreateMultipleCommands() throws Exception, IOException {
         String dataset = "Hell#Dante Alighieri#Lombard,Rome\nA Little Pilgrim#Margaret O. (Wilson) Oliphant#Mary,Young";
 
-        BookMigrate migrator = new BookMigrate("Cities", new BookIdentifierProviderStub());
+        BookMigrate migrator = createMigrator(new BookIdentifierProviderStub());
 
         byte[] bytes = dataset.getBytes();
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
@@ -44,7 +45,7 @@ public class BookMigrateTest {
     public void shouldBeAbleToCreateCommandsWhereAuthorsIncludeQute() throws Exception, IOException {
         String dataset = "Hell#Dante A'lighieri#Lombard\n";
 
-        BookMigrate migrator = new BookMigrate("Cities", new BookIdentifierProviderStub());
+        BookMigrate migrator = createMigrator(new BookIdentifierProviderStub());
 
         byte[] bytes = dataset.getBytes();
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
@@ -64,7 +65,7 @@ public class BookMigrateTest {
     public void shouldBeAbleToCreateCommandsWhereBookNameIncludeQute() throws Exception, IOException {
         String dataset = "He'll#Dante Alighieri#Lombard\n";
 
-        BookMigrate migrator = new BookMigrate("Cities", new BookIdentifierProviderStub());
+        BookMigrate migrator = createMigrator(new BookIdentifierProviderStub());
 
         byte[] bytes = dataset.getBytes();
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
@@ -84,7 +85,7 @@ public class BookMigrateTest {
     public void shouldBeAbleToCreateCommandsWhereCityNameIncludeQute() throws Exception, IOException {
         String dataset = "Hell#Dante Alighieri#Lom'bard\n";
 
-        BookMigrate migrator = new BookMigrate("Cities", new BookIdentifierProviderStub());
+        BookMigrate migrator = createMigrator(new BookIdentifierProviderStub());
 
         byte[] bytes = dataset.getBytes();
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
@@ -101,15 +102,18 @@ public class BookMigrateTest {
     }
 
     @Test
-    @Ignore
     public void performMigration_shouldInsertAllData() throws Exception, IOException {
-        BookMigrate migrator = new BookMigrate("Cities", new IBookIdentifierProvider() {
+        BookMigrate migrator = createMigrator(new IBookIdentifierProvider() {
             public UUID getNextIdentifier() {
                 return UUID.randomUUID();
             }
         });
 
-        migrator.performMigration();
+        // "/data/allformatted.txt"
+        migrator.performMigration("/data/test-data/books.csv");
     }
 
+    private static BookMigrate createMigrator(IBookIdentifierProvider bookIdentifierProvider) {
+        return new BookMigrate("jdbc:mysql://localhost:3306/testprojekt5", "root", "123123qwe", bookIdentifierProvider);
+    }
 }

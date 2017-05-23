@@ -13,21 +13,26 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.lang3.text.StrBuilder;
 
 public class BookMigrate {
-    private final String tableName;
+    
+    private final String url;
+    private final String username;
+    private final String password;
     private final IBookIdentifierProvider bookIdentifierProvider;
 
-    public BookMigrate(String tableName, IBookIdentifierProvider bookIdentifierProvider) {
-        this.tableName = tableName;
+    public BookMigrate(String url, String username, String password, IBookIdentifierProvider bookIdentifierProvider) {
+        this.url = url;
+        this.username = username;
+        this.password = password;
         this.bookIdentifierProvider = bookIdentifierProvider;
     }
 
-    public void performMigration() throws Exception, IOException {
+    public void performMigration(String filePath) throws Exception, IOException {
         // Read citites
         final String dir = System.getProperty("user.dir");
-        final String path = dir + "/data/allformatted.txt";
+        final String path = dir + filePath;
 
         try (FileInputStream stream = new FileInputStream(path)) {
-            String[] strCommandList = createMigration(new InputStreamReader(stream));
+            String[] strCommandList = createMigration(new InputStreamReader(stream, "UTF8"));
 
             // Since the commands are ordered in the way that they need to be inserted
             // will should loop over them, and execute the queries in that order, so 
@@ -41,13 +46,13 @@ public class BookMigrate {
                 // Loop over the commands in paralllel
                 commands.parallelStream().forEach(command -> {
                     // Fire the command against the DB< 
-                    try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/testprojekt3", "root",
-                            "123123qwe")) {
+                    try (Connection con = DriverManager.getConnection(this.url, this.username, this.password)) {
                         String[] subCommands = command.split("\n");
 
                         try (Statement st = con.createStatement()) {
                             st.execute(subCommands[0]);
 
+                            System.out.println(subCommands[0]);
                             System.out.println("Execute command!- " + index.getAndIncrement());
                         }
 
