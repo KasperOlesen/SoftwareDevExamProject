@@ -77,7 +77,7 @@ public class CitiesMigrateNeo {
     }
 
     public String createCypherString(String id, String name, double latitude, double longitude) {
-        return "CREATE (c:City {id: '" + id + "', name: '" + name + "', lat: '" + latitude + "', lng: '" + longitude
-                + "'})";
+        return "CREATE (c:City {id: '" + id + "', name: '" + name + "', latitude: " + latitude + ", longitude: " + longitude
+                + "})";
     }
 }
