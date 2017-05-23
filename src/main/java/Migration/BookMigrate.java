@@ -66,6 +66,8 @@ public class BookMigrate {
                                     }
                                 });
                     }
+
+                    System.out.println("Executed: " + index.getAndIncrement());
                 } catch (SQLException ex) {
                     System.out.println("Could not fire \"" + command + "\" - " + ex.getMessage());
                 }
@@ -132,11 +134,14 @@ public class BookMigrate {
     public StringBuilder createAuthorsCommands(Set<String> authors) {
         StringBuilder strBuilder = new StringBuilder();
 
+        List<String> parts = new ArrayList<>();
         for (String author : authors) {
-            String sql = "INSERT INTO authors (name) VALUES ('" + author.replace("'", "\\'") + "');\n\n";
-
-            strBuilder.append(sql);
+            parts.add("('" + author.replace("'", "\\'") + "')");
         }
+
+        String sql = "INSERT INTO authors (name) VALUES " + String.join(", ", parts);
+        strBuilder.append(sql);
+        strBuilder.append("\n\n");
 
         return strBuilder;
     }
@@ -158,10 +163,13 @@ public class BookMigrate {
             }
 
             // Lets add some references to the cities
+            List<String> cityParts = new ArrayList<>();
             for (String city : book.cities) {
-                commandBuilder.append("INSERT INTO book_city (bookId, cityId) SELECT '" + book.id
-                        + "', cities.id FROM cities WHERE cities.name = '" + city.replace("'", "\\'") + "';\n");
+                cityParts.add("'" + city.replace("'", "\\'") + "'");
             }
+
+            commandBuilder.append("INSERT INTO book_city (bookId, cityId) SELECT '" + book.id
+                    + "', cities.id FROM cities WHERE cities.name IN (" + String.join(", ", cityParts) + ");\n");
 
             strBuilder.append(commandBuilder);
             strBuilder.append("\n");

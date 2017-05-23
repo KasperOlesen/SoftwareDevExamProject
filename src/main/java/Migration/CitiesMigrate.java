@@ -5,8 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 
 import java.sql.*;
 
@@ -32,6 +31,8 @@ public class CitiesMigrate {
     public void performMigration(InputStream stream) throws IOException {
         String[] strCommands = createMigration(new InputStreamReader(stream, "UTF8")).split("\n");
         Collection<String> commands = Arrays.asList(strCommands);
+        
+        System.out.println("Cities loaded");
 
         // Loop over the commands in paralllel
         commands.parallelStream().forEach(command -> {
@@ -45,11 +46,14 @@ public class CitiesMigrate {
                 System.out.println("Could not fire \"" + command + "\" - " + ex.getMessage());
             }
         });
+
+        System.out.println("Cities created");
     }
 
     public String createMigration(InputStreamReader readerStream) throws IOException {
         StringBuilder strBuilder = new StringBuilder();
 
+        List<String> sqlParts = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(readerStream)) {
             String line = reader.readLine();
 
@@ -61,17 +65,19 @@ public class CitiesMigrate {
                 double latitude = Double.parseDouble(parts[2]);
                 double longitude = Double.parseDouble(parts[3]);
 
-                strBuilder.append(createSqlString(id, name, latitude, longitude) + "\n");
+                sqlParts.add(createSqlString(id, name, latitude, longitude));
 
                 line = reader.readLine();
             }
         }
 
+        strBuilder.append("INSERT INTO Cities (id, name, location) VALUES " + String.join(", ", sqlParts));
+
         return strBuilder.toString();
     }
 
     public String createSqlString(String id, String name, double latitude, double longitude) {
-        return "INSERT INTO Cities (id, name, location) VALUES (" + id + ", '" + name.replace("'", "\\'")
-                + "', GeomFromText(CONCAT('POINT (', " + longitude + ", ' ', " + latitude + ", ')')));";
+        return "(" + id + ", '" + name.replace("'", "\\'")
+                + "', GeomFromText(CONCAT('POINT (', " + longitude + ", ' ', " + latitude + ", ')')))";
     }
 }
