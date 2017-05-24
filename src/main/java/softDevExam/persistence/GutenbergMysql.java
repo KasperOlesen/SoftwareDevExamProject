@@ -108,28 +108,22 @@ public class GutenbergMysql implements GutenbergService {
 
 			try (PreparedStatement ps = conn.prepareStatement(command)) {
 				ps.setString(1, author);
-				try {
-					ResultSet rs = ps.executeQuery();
-					while (rs.next()) {
-						String bookId = rs.getString("books.id");
-						Book book;
 
-						if (bookLookup.containsKey(bookId)) {
-							book = bookLookup.get(bookId);
-						} else {
-							book = new Book(bookId, rs.getString("books.name"),
-									new Author(rs.getString("authors.name")));
-							bookLookup.put(book.getId(), book);
-						}
+				ResultSet rs = ps.executeQuery();
+				while (rs.next()) {
+					String bookId = rs.getString("books.id");
+					Book book;
 
-						// book.getCities().add(new City(rs.getString("cities.name"), rs.getDouble("latitude"),
-						// 		rs.getDouble("longitude")));
+					if (bookLookup.containsKey(bookId)) {
+						book = bookLookup.get(bookId);
+					} else {
+						book = new Book(bookId, rs.getString("books.name"), new Author(rs.getString("authors.name")));
+						bookLookup.put(book.getId(), book);
 					}
-				} catch (Exception e) {
 
-					// TODO: handle exception
+					book.getCities().add(
+							new City(rs.getString("cities.name"), rs.getDouble("latitude"), rs.getDouble("longitude")));
 				}
-
 			}
 		}
 
@@ -155,11 +149,10 @@ public class GutenbergMysql implements GutenbergService {
 					+ "JOIN book_city ON (book_city.cityId = cities.id) "
 					+ "JOIN books ON (books.id = book_city.bookId) "
 					+ "JOIN book_author ON (book_author.bookId = books.id) "
-					+ "JOIN authors ON (authors.id = book_author.authorId) "
-					+ "WHERE (3959 * ACOS(COS(RADIANS(" + longitude
-					+ ")) * COS(RADIANS(X(cities.location))) * COS(RADIANS(Y(cities.location)) - RADIANS(" + latitude
-					+ ")) + SIN(RADIANS(" + longitude + ")) * SIN(RADIANS(X(cities.location))))) < " + radiusInKilometers
-					+ "";
+					+ "JOIN authors ON (authors.id = book_author.authorId) " + "WHERE (3959 * ACOS(COS(RADIANS("
+					+ longitude + ")) * COS(RADIANS(X(cities.location))) * COS(RADIANS(Y(cities.location)) - RADIANS("
+					+ latitude + ")) + SIN(RADIANS(" + longitude + ")) * SIN(RADIANS(X(cities.location))))) < "
+					+ radiusInKilometers + "";
 
 			System.out.println(command);
 

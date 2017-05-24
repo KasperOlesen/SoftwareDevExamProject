@@ -7,8 +7,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import softDevExam.persistence.GutenbergNeo4J;
 
-import org.junit.Test;
-import org.junit.Before;
+import org.junit.*;
 
 import java.io.*;
 
@@ -26,6 +25,7 @@ import Migration.*;
 
 public class GutenbergNeoTest {
         @Test
+        @Ignore
         public void givenACityNameYourApplicationReturnsAllBookTitlesWithCorrespondingAuthorsThatMentionThisCity()
                         throws Exception {
                 GutenbergNeo4J service = createService();
@@ -39,6 +39,7 @@ public class GutenbergNeoTest {
         }
 
         @Test
+        @Ignore
         public void givenAGeolocationYourApplicationListsAllBooksMentioningACityInVicinityOfTheGivenGeolocation()
                         throws Exception {
                 GutenbergNeo4J service = createService();
