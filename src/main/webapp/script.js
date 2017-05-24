@@ -141,7 +141,7 @@ function submit(category){
       console.log(data);
       ///////////////
       if (category == "book"){
-        loadMarkers(data.map(x=> x.cities).reduce((prev, cur) => prev.concat(cur), []));
+        loadMarkers(data);
       } else if (category == "author"){
         $.each(data.books, function(i, value) {
           $("#resultList").append($("<li>").text(JSON.stringify(value)));
