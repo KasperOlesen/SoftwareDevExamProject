@@ -107,7 +107,7 @@ function submit(category){
   //       });
 
   var db = "";
-  var path = "/api/";
+  var path = "api/";
   var inputData = {};
 
   //Setting path to match REST-service
@@ -121,7 +121,7 @@ function submit(category){
   //Building data-object
   if(category == "geo"){
     inputData["latitude"] = $("#lat").val();
-    inputData["longtitude"] = $("#lng").val();
+    inputData["longitude"] = $("#lng").val();
   } else {
     inputData[category] = $("#" + category).val(); 
   }
