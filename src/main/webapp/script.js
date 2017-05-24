@@ -107,7 +107,7 @@ function submit(category){
   //       });
 
   var db = "";
-  var path = "http://localhost:3000/softDevExam/api/";
+  var path = "/api/";
   var inputData = {};
 
   //Setting path to match REST-service
@@ -141,12 +141,12 @@ function submit(category){
       console.log(data);
       ///////////////
       if (category == "book"){
-        loadMarkers(data);
+        loadMarkers(data.map(x=> x.cities).reduce((prev, cur) => prev.concat(cur), []));
       } else if (category == "author"){
         $.each(data.books, function(i, value) {
           $("#resultList").append($("<li>").text(JSON.stringify(value)));
         });
-        loadMarkers(data);
+        loadMarkers(data.map(x=> x.cities).reduce((prev, cur) => prev.concat(cur), []));
       } else {
         $.each(data, function(i, value) {
           $("#resultList").append($("<li>").text(JSON.stringify(value)));
