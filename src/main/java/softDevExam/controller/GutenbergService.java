@@ -1,6 +1,5 @@
 package softDevExam.controller;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import softDevExam.entity.Book;
