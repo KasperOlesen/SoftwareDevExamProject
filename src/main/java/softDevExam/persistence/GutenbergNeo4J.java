@@ -39,8 +39,8 @@ public class GutenbergNeo4J implements GutenbergService {
 
 		try (Driver driver = GraphDatabase.driver(this.url, this.token)) {
 			try (Session session = driver.session()) {
-				final String command = "MATCH (a:Author)-[r:HAS_WRITTEN]->(b:Book)-[m:MENTIONS]->(c:City) "
-						+ "WHERE (b)-[:MENTIONS]->(:City { name: $cityName }) " + "RETURN b, c, a;";
+				final String command = "MATCH (a:Author)-[r:HAS_WRITTEN]->(b:Book)-[m:MENTIONS]->(c:City  { name: $cityName }) "
+						+ "RETURN b, a;";
 
 				Map<String, Object> parameters = new HashMap<>();
 				parameters.put("cityName", city);
@@ -63,9 +63,9 @@ public class GutenbergNeo4J implements GutenbergService {
 						bookLookup.put(bookResult.getId(), bookResult);
 					}
 
-					Value c = record.get("c");
-					bookResult.getCities().add(new City(c.get("name").asString(), c.get("latitude").asDouble(),
-							c.get("longitude").asDouble()));
+					// Value c = record.get("c");
+					// bookResult.getCities().add(new City(c.get("name").asString(), c.get("latitude").asDouble(),
+					// 		c.get("longitude").asDouble()));
 				}
 			}
 		}

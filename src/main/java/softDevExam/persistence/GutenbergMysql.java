@@ -122,8 +122,8 @@ public class GutenbergMysql implements GutenbergService {
 							bookLookup.put(book.getId(), book);
 						}
 
-						book.getCities().add(new City(rs.getString("cities.name"), rs.getDouble("latitude"),
-								rs.getDouble("longitude")));
+						// book.getCities().add(new City(rs.getString("cities.name"), rs.getDouble("latitude"),
+						// 		rs.getDouble("longitude")));
 					}
 				} catch (Exception e) {
 
@@ -156,11 +156,10 @@ public class GutenbergMysql implements GutenbergService {
 					+ "JOIN books ON (books.id = book_city.bookId) "
 					+ "JOIN book_author ON (book_author.bookId = books.id) "
 					+ "JOIN authors ON (authors.id = book_author.authorId) "
-					+ "WHERE  EXISTS (SELECT bc.bookId FROM  cities c " + "JOIN book_city bc ON (bc.cityId = c.id) "
-					+ "WHERE bc.bookId = books.id AND (3959 * ACOS(COS(RADIANS(" + longitude
-					+ ")) * COS(RADIANS(X(c.location))) * COS(RADIANS(Y(c.location)) - RADIANS(" + latitude
-					+ ")) + SIN(RADIANS(" + longitude + ")) * SIN(RADIANS(X(c.location))))) < " + radiusInKilometers
-					+ ")";
+					+ "WHERE (3959 * ACOS(COS(RADIANS(" + longitude
+					+ ")) * COS(RADIANS(X(cities.location))) * COS(RADIANS(Y(cities.location)) - RADIANS(" + latitude
+					+ ")) + SIN(RADIANS(" + longitude + ")) * SIN(RADIANS(X(cities.location))))) < " + radiusInKilometers
+					+ "";
 
 			System.out.println(command);
 
