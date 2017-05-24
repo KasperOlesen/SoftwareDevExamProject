@@ -43,15 +43,11 @@ public class GutenbergMysql implements GutenbergService {
 
 	@Override
 	public List<Book> getBooksByCity(String city) throws Exception {
-		List<Book> resultList = new ArrayList<>();
-
 		Map<String, Book> bookLookup = new HashMap<>();
 
 		try (Connection conn = getConnection()) {
-			final String command = "SELECT books.*, authors.*, cities.*, X(cities.location) as longitude, Y(cities.location) as latitude FROM books JOIN book_author ON (book_author.bookId = books.id) "
+			final String command = "SELECT books.*, authors.* FROM books JOIN book_author ON (book_author.bookId = books.id) "
 					+ " JOIN authors ON (authors.id = book_author.authorId) "
-					+ " JOIN book_city ON (book_city.bookId = books.id) "
-					+ " JOIN cities ON (book_city.cityId = cities.id) "
 					+ " WHERE EXISTS (SELECT 1 FROM book_city JOIN cities ON (cities.id = book_city.cityId) WHERE book_city.bookId = books.id AND cities.name = ?)";
 
 			try (PreparedStatement ps = conn.prepareStatement(command)) {
@@ -70,9 +66,6 @@ public class GutenbergMysql implements GutenbergService {
 									new Author(rs.getString("authors.name")));
 							bookLookup.put(book.getId(), book);
 						}
-
-						book.getCities().add(new City(rs.getString("cities.name"), rs.getDouble("latitude"),
-								rs.getDouble("longitude")));
 					}
 				}
 			}
