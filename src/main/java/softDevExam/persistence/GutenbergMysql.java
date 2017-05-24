@@ -46,7 +46,7 @@ public class GutenbergMysql implements GutenbergService {
 		Map<String, Book> bookLookup = new HashMap<>();
 
 		try (Connection conn = getConnection()) {
-			final String command = "SELECT books.*, authors.* FROM books JOIN book_author ON (book_author.bookId = books.id) "
+			final String command = "SELECT books.*, authors.*, FROM books JOIN book_author ON (book_author.bookId = books.id) "
 					+ " JOIN authors ON (authors.id = book_author.authorId) "
 					+ " WHERE EXISTS (SELECT 1 FROM book_city JOIN cities ON (cities.id = book_city.cityId) WHERE book_city.bookId = books.id AND cities.name = ?)";
 
