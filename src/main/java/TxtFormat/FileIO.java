@@ -93,7 +93,9 @@ public class FileIO {
                         for (int l = 0; l < tLine.length; l++) {
                             if (tLine[l].equals(cities[k]) && !cityList.contains(cities[k])) {
                                 cityList.add(cities[k]);
+//                                System.out.println(cities[k]);
                                 if (!firstCity) {
+                                    
                                     writer.append("," + cities[k]);
                                 } else if (firstCity) {
                                     writer.append("#" + cities[k]);
@@ -292,11 +294,15 @@ public class FileIO {
     public String[] getCities(String path) throws FileNotFoundException, UnsupportedEncodingException, IOException {
         FileIO fio = new FileIO();
         BufferedReader citiesBr = fio.read(path);
-        String[] cities = new String[23673];
+        BufferedReader citiesBr2 = fio.read(path);
+        int j = 0;
+        while (citiesBr.readLine() != null) {
+            j++;
+        }
+        String[] cities = new String[j];
         String strLine2;
         int i = 0;
-        while ((strLine2 = citiesBr.readLine()) != null) {
-//                System.out.println(strLine2.split(",")[1]);
+        while ((strLine2 = citiesBr2.readLine()) != null) {
             cities[i] = strLine2.split(",")[1];
             i++;
         }

@@ -30,26 +30,6 @@ public class TxtFormatTest {
     public TxtFormatTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
     @Test
     public void getCitiesContentTest() throws UnsupportedEncodingException, IOException {
         FileIO fio = new FileIO();
@@ -106,20 +86,20 @@ public class TxtFormatTest {
 //     assertThat(books, is(test));
 //     }
 
-//     @Test
-//     public void writeFormattedTxtTest() throws UnsupportedEncodingException, IOException {
-//     FileIO fio = new FileIO();
-//     String[] cities = fio.getCities("data/test-data/cities.csv");
-//         for (int i = 0; i < cities.length; i++) {
-//             System.out.println(cities[i]);
-//         }
-//     String path = "data/test-data/allformattedtest.txt";
-////     BufferedReader br = Mockito.mock(BufferedReader.class);
-//     
-////     Mockito.when(br.readLine()).thenReturn("aoidfghsohg", "oufuidah", "Title: Test Title", " ", "Author: Test Author", "dfghdfghdfgjr6y", "*** hgdhd GUTENBERG", "AOIHS)DHAHFW Wichita", "iogoushduh Moscow Danville", "Covington ogsuhdfgiyush", "     Erlanger    " , "Fern Creek");
-//     fio.createFormattedTxt(fio.read("data/test-data/testbook.txt"), cities, path);
-//     
-//     BufferedReader br1 = fio.read(path);
-//     assertThat(br1.readLine(), is("Test Book#Test Author#Wichita,Danville,Covington,Ashland,Fern Creek"));
-//     }
+     @Test
+     public void writeFormattedTxtTest() throws UnsupportedEncodingException, IOException {
+     FileIO fio = new FileIO();
+     String[] cities = fio.getCities("data/test-data/cities.csv");
+         for (int i = 0; i < cities.length; i++) {
+             System.out.println(cities[i]);
+         }
+     String path = "data/test-data/allformattedtest.txt";
+//     BufferedReader br = Mockito.mock(BufferedReader.class);
+     
+//     Mockito.when(br.readLine()).thenReturn("aoidfghsohg", "oufuidah", "Title: Test Title", " ", "Author: Test Author", "dfghdfghdfgjr6y", "*** hgdhd GUTENBERG", "AOIHS)DHAHFW Wichita", "iogoushduh Moscow Danville", "Covington ogsuhdfgiyush", "     Erlanger    " , "Fern Creek");
+     fio.createFormattedTxt(fio.read("data/test-data/testbook.txt"), cities, path);
+     
+     BufferedReader br1 = fio.read(path);
+     assertThat(br1.readLine(), is("Test Book#Test Author#Wichita,Danville,Covington,Ashland,Erlanger"));
+     }
 }
