@@ -6,7 +6,6 @@
 package TxtFormat;
 
 import Migration.AuthorMigrateNeo;
-import Migration.BookMigrateNeoOpti;
 import Migration.CitiesMigrateNeo;
 import Migration.BooksMigrateNeo;
 import Migration.CreateRelationshipsNeo;
@@ -53,10 +52,6 @@ public class Format {
                 AuthTokens.basic("neo4j", "class"));
         crn.performMigration("/data/book_city.txt");
 
-        // BookMigrateNeoOpti bmno = new BookMigrateNeoOpti(
-        //              "bolt://localhost:7687",
-        //            AuthTokens.basic("neo4j", "class"));
-        //  bmno.performMigration("/data/allformatted2.txt");
         
         //Below code was used to start the operation of scraping all the data we needed from the books 
         
