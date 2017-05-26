@@ -21,6 +21,7 @@ import org.neo4j.driver.v1.*;
 public class CreateRelationshipsNeo {
     private final String url;
     private final AuthToken token;
+    private int i = 0;
 
     public CreateRelationshipsNeo(String url, AuthToken token) {
         this.url = url;
@@ -42,7 +43,8 @@ public class CreateRelationshipsNeo {
         // Loop over the commands in paralllel
         commands.parallelStream().forEach(command -> {
             // Fire the command against the DB
-
+            i++;
+            System.out.println("Executed" + i);
             try (Session session = driver.session()) {
                 StatementResult result = session.run(command);
             }
