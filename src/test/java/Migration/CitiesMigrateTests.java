@@ -16,7 +16,7 @@ public class CitiesMigrateTests {
         String command = migrator.createSqlString("1", "Test", 1.2, 2.1);
 
         assertThat(command, equalTo(
-                "INSERT INTO Cities (id, name, location) VALUES (1, 'Test', GeomFromText(CONCAT('POINT (', 2.1, ' ', 1.2, ')')));"));
+                "(1, 'Test', GeomFromText(CONCAT('POINT (', 2.1, ' ', 1.2, ')')))"));
     }
 
     @Test
@@ -26,7 +26,7 @@ public class CitiesMigrateTests {
         String command = migrator.createSqlString("1", "Test2'2123", 1.2, 2.1);
 
         assertThat(command, equalTo(
-                "INSERT INTO Cities (id, name, location) VALUES (1, 'Test2\\'2123', GeomFromText(CONCAT('POINT (', 2.1, ' ', 1.2, ')')));"));
+                "(1, 'Test2\\'2123', GeomFromText(CONCAT('POINT (', 2.1, ' ', 1.2, ')')))"));
     }
 
     @Test
@@ -40,10 +40,10 @@ public class CitiesMigrateTests {
         String commands = migrator.createMigration(new InputStreamReader(bais));
 
         assertThat(commands, equalTo(
-                "INSERT INTO Cities (id, name, location) VALUES (1132495, 'Nahrin', GeomFromText(CONCAT('POINT (', 69.13343, ' ', 36.0649, ')')));\nINSERT INTO Cities (id, name, location) VALUES (1133453, 'Maymana', GeomFromText(CONCAT('POINT (', 64.78361, ' ', 35.92139, ')')));\n"));
+                "INSERT INTO cities (id, name, location) VALUES (1132495, 'Nahrin', GeomFromText(CONCAT('POINT (', 69.13343, ' ', 36.0649, ')'))), (1133453, 'Maymana', GeomFromText(CONCAT('POINT (', 64.78361, ' ', 35.92139, ')')))"));
     }
 
     private static CitiesMigrate createMigrator() {
-        return new CitiesMigrate("jdbc:mysql://localhost:3306/testprojekt3", "root", "pwd");
+        return new CitiesMigrate("jdbc:mysql://localhost:3306/testprojekt3", "root", "123123qwe");
     }
 }
