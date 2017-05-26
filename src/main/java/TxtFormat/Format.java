@@ -27,8 +27,8 @@ public class Format {
         
 //        FileIO fio = new FileIO();
 
-//        fio.createFormattedTxtAuthor(fio.read("D:\\school\\formatted\\allformatted.txt"), "D:\\school\\formatted\\formattedauthors.txt");
-//        fio.createFormattedTxtBook(fio.read("D:\\school\\formatted\\allformatted.txt"), fio.read("D:\\school\\formatted\\formattedauthors.txt"), "D:\\school\\formatted\\formattedbooks.txt");
+//        fio.createFormattedTxtAuthor(fio.read("data/allformatted.txt"), "data/formattedauthors.txt");
+//        fio.createFormattedTxtBook(fio.read("data/allformatted.txt"), fio.read("data/formattedauthors.txt"), "data/formattedbooks.txt");
 //        fio.createFormattedTxtBookCity(fio.read("data/allformatted.txt"), fio.read("data/cities.txt"), fio.read("data/formattedbooks.txt"), "data/book_city.txt");
 
 //Run to import data to neo4j
