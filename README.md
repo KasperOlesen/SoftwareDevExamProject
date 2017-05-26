@@ -12,6 +12,6 @@ neo4j-import --into "C:\Users\priva_000\Documents\Neo4j\testproject9.graphdb" --
 
 Rapport
 ----------
-Database : SoftwareDevExamProject/Measurements.pdf
+Database : Measurements.pdf
 
-Test : 
+Test : Test Reflektion.pdf
