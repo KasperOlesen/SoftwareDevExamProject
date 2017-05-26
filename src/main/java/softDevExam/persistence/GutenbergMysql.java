@@ -50,25 +50,22 @@ public class GutenbergMysql implements GutenbergService {
 					+ " JOIN authors ON (authors.id = book_author.authorId) "
 					+ " WHERE EXISTS (SELECT 1 FROM book_city JOIN cities ON (cities.id = book_city.cityId) WHERE book_city.bookId = books.id AND cities.name = ?)";
 
-			try (PreparedStatement ps = conn.prepareStatement(command)) {
-				ps.setString(1, city);
+			PreparedStatement ps = conn.prepareStatement(command);
+			ps.setString(1, city);
+			ResultSet rs = ps.executeQuery();
 
-				try (ResultSet rs = ps.executeQuery()) {
-					while (rs.next()) {
-						String bookId = rs.getString("books.id");
+			while (rs.next()) {
+				String bookId = rs.getString("books.id");
+				Book book;
 
-						Book book;
-
-						if (bookLookup.containsKey(bookId)) {
-							book = bookLookup.get(bookId);
-						} else {
-							book = new Book(bookId, rs.getString("books.name"),
-									new Author(rs.getString("authors.name")));
-							bookLookup.put(book.getId(), book);
-						}
-					}
+				if (bookLookup.containsKey(bookId)) {
+					book = bookLookup.get(bookId);
+				} else {
+					book = new Book(bookId, rs.getString("books.name"), new Author(rs.getString("authors.name")));
+					bookLookup.put(book.getId(), book);
 				}
 			}
+
 		}
 
 		return new ArrayList<Book>(bookLookup.values());
@@ -79,19 +76,20 @@ public class GutenbergMysql implements GutenbergService {
 		List<City> resultList = new ArrayList<>();
 
 		try (Connection conn = getConnection()) {
-			try (PreparedStatement ps = conn.prepareStatement(getCitiesByBookPS())) {
-				ps.setString(1, book);
+			PreparedStatement ps = conn.prepareStatement(
+					"SELECT cities.name, X(cities.location) as longitude, Y(cities.location) as latitude FROM books "
+							+ "JOIN book_city ON (book_city.bookId = books.id) "
+							+ "JOIN cities ON (cities.id = book_city.cityId) " + "WHERE books.name = ?");
+			ps.setString(1, book);
 
-				try (ResultSet rs = ps.executeQuery()) {
-					while (rs.next()) {
-						resultList.add(
-								new City(rs.getString("name"), rs.getDouble("latitude"), rs.getDouble("longitude")));
-					}
-				}
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				resultList.add(new City(rs.getString("name"), rs.getDouble("latitude"), rs.getDouble("longitude")));
 			}
 		}
 
 		return resultList;
+
 	}
 
 	@Override
@@ -106,34 +104,28 @@ public class GutenbergMysql implements GutenbergService {
 					+ "JOIN book_city ON (book_city.bookId = books.id) "
 					+ "JOIN cities ON (book_city.cityId = cities.id) " + "WHERE authors.name = ?";
 
-			try (PreparedStatement ps = conn.prepareStatement(command)) {
-				ps.setString(1, author);
+			PreparedStatement ps = conn.prepareStatement(command);
+			ps.setString(1, author);
 
-				ResultSet rs = ps.executeQuery();
-				while (rs.next()) {
-					String bookId = rs.getString("books.id");
-					Book book;
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				String bookId = rs.getString("books.id");
+				Book book;
 
-					if (bookLookup.containsKey(bookId)) {
-						book = bookLookup.get(bookId);
-					} else {
-						book = new Book(bookId, rs.getString("books.name"), new Author(rs.getString("authors.name")));
-						bookLookup.put(book.getId(), book);
-					}
-
-					book.getCities().add(
-							new City(rs.getString("cities.name"), rs.getDouble("latitude"), rs.getDouble("longitude")));
+				if (bookLookup.containsKey(bookId)) {
+					book = bookLookup.get(bookId);
+				} else {
+					book = new Book(bookId, rs.getString("books.name"), new Author(rs.getString("authors.name")));
+					bookLookup.put(book.getId(), book);
 				}
+
+				book.getCities().add(
+						new City(rs.getString("cities.name"), rs.getDouble("latitude"), rs.getDouble("longitude")));
 			}
 		}
 
 		return new ArrayList<Book>(bookLookup.values());
-	}
 
-	private String getCitiesByBookPS() {
-		return "SELECT cities.name, X(cities.location) as longitude, Y(cities.location) as latitude FROM books "
-				+ "JOIN book_city ON (book_city.bookId = books.id) " + "JOIN cities ON (cities.id = book_city.cityId) "
-				+ "WHERE books.name = ?";
 	}
 
 	@Override
@@ -156,26 +148,23 @@ public class GutenbergMysql implements GutenbergService {
 
 			System.out.println(command);
 
-			try (Statement ps = conn.createStatement()) {
-				try (ResultSet rs = ps.executeQuery(command)) {
+			Statement ps = conn.createStatement();
+			ResultSet rs = ps.executeQuery(command);
 
-					while (rs.next()) {
-						String bookId = rs.getString("books.id");
+			while (rs.next()) {
+				String bookId = rs.getString("books.id");
 
-						Book book;
+				Book book;
 
-						if (bookLookup.containsKey(bookId)) {
-							book = bookLookup.get(bookId);
-						} else {
-							book = new Book(bookId, rs.getString("books.name"),
-									new Author(rs.getString("authors.name")));
-							bookLookup.put(book.getId(), book);
-						}
-
-						book.getCities().add(new City(rs.getString("cities.name"), rs.getDouble("latitude"),
-								rs.getDouble("longitude")));
-					}
+				if (bookLookup.containsKey(bookId)) {
+					book = bookLookup.get(bookId);
+				} else {
+					book = new Book(bookId, rs.getString("books.name"), new Author(rs.getString("authors.name")));
+					bookLookup.put(book.getId(), book);
 				}
+
+				book.getCities().add(
+						new City(rs.getString("cities.name"), rs.getDouble("latitude"), rs.getDouble("longitude")));
 			}
 		}
 
